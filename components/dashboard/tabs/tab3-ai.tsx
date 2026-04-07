@@ -102,7 +102,7 @@ export function Tab3AI() {
       </Card>
 
       {/* Auto Dashboard - Khu vực biểu đồ AI đề xuất */}
-      {autoConfigs.length > 0 && (
+      {(autoConfigs || []).length > 0 && (
         <div className="space-y-6">
           <div className="flex items-center gap-3 px-2">
              <Zap className="h-6 w-6 text-amber-500 fill-amber-500" />
@@ -110,7 +110,7 @@ export function Tab3AI() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {autoConfigs.map((config, idx) => (
+            {(autoConfigs || []).map((config, idx) => (
               <Card key={idx} className="border-none shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
                 <CardContent className="pt-6">
                   <div className="flex justify-between items-start mb-6">
