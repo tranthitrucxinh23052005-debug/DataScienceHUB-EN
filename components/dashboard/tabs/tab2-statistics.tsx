@@ -17,19 +17,19 @@ import {
 
 export function Tab2Statistics() {
   const {
+    fullData, // <--- Tui lấy thêm biến này ra để rút cột
     kpiData,
     classCol,
     setClassCol,
-    columnsInfo,
     statsData,
     boxplotData
   } = useDataContext();
 
-  // ĐÃ SỬA: Đổi tên biến lọc để không trùng với columnsInfo lấy từ Context
-  const categoryCols = (columnsInfo || []).filter((c: any) => 
-    c.type === 'CATEGORICAL' && 
-    !['Diem_Chu', 'Xep_Loai'].includes(c.name)
-);
+  // --- TUYỆT CHIÊU 4H SÁNG (Phiên bản Tab 2) ---
+  const availableCols = (fullData || []).length > 0 ? Object.keys(fullData[0]) : [];
+  const categoryCols = availableCols
+    .filter(col => !['TBM_He10', 'TBM_He4', 'Diem_Chu', 'Xep_Loai'].includes(col))
+    .map(col => ({ name: col })); // Bọc lại để component ở dưới hiểu được
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -96,7 +96,7 @@ export function Tab2Statistics() {
                 <Bar dataKey="count" name="Number of students" fill={THEME.primary} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-            <ChartGuide title="Histogram" content="Đỉnh cao nhất giúp TX xác định mặt bằng chung của sinh viên đang nằm ở thang điểm nào." />
+            <ChartGuide title="Histogram" content="The highest peak helps you identify the general performance level of the students." />
           </CardContent>
         </Card>
 
@@ -143,11 +143,11 @@ export function Tab2Statistics() {
                 <Tooltip />
                 <Bar dataKey="whiskerMin" name="Min-Q1" barSize={2} fill="#94a3b8" />
                 <Bar dataKey="whiskerMax" name="Q3-Max" barSize={2} fill="#94a3b8" />
-                <Bar dataKey="boxRange" name="Khối 50% (Q1-Q3)" barSize={35} fill={THEME.primary} radius={2} />
-                <Scatter dataKey="median" name="Trung Vị" fill="#d97706" />
+                <Bar dataKey="boxRange" name="Box 50% (Q1-Q3)" barSize={35} fill={THEME.primary} radius={2} />
+                <Scatter dataKey="median" name="Median" fill="#d97706" />
               </ComposedChart>
             </ResponsiveContainer>
-            <ChartGuide title="Boxplot" content="Khối hộp càng ngắn chứng tỏ điểm số của lớp đó càng đồng đều, ít bị chênh lệch giàu nghèo (điểm số)." />
+            <ChartGuide title="Boxplot" content="A shorter box indicates more consistent scores within the group, meaning less disparity." />
           </CardContent>
         </Card>
       )}
@@ -159,7 +159,7 @@ function ChartGuide({ title, content }: { title: string; content: string }) {
   return (
     <details className="mt-4 bg-slate-50 border rounded-lg group cursor-pointer transition-all">
       <summary className="px-4 py-2 text-[11px] font-bold text-blue-700 flex items-center justify-between outline-none uppercase">
-        <span>💡 Hướng dẫn đọc {title}</span>
+        <span>💡 How to read {title}</span>
         <span className="group-open:rotate-180 transition-transform">▼</span>
       </summary>
       <div className="px-4 pb-3 text-[11px] text-slate-600 border-t pt-2 italic">
