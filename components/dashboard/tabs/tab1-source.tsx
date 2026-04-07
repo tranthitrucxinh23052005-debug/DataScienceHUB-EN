@@ -27,7 +27,6 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 
 export function Tab1Source() {
-  // Móc toàn bộ dữ liệu và hàm từ "Bộ não" ra (Không dùng Props nữa)
   const {
     selectedFile,
     fullData,
@@ -57,8 +56,11 @@ export function Tab1Source() {
     exportFilteredExcel
   } = useDataContext();
   
-  const hasHUBScore = fullData.length > 0 && 'TBM_He4' in fullData[0];
-  const numericCols = columnsInfo.filter(c => c.type === 'number');
+  const hasHUBScore = (fullData || []).length > 0 && 'TBM_He4' in (fullData[0] || {});
+  
+  // --- TUYỆT CHIÊU 4H SÁNG: Lấy thẳng tên cột từ file CSV ---
+  const availableCols = (fullData || []).length > 0 ? Object.keys(fullData[0]) : [];
+  const dropdownCols = availableCols.filter(col => !['TBM_He10','TBM_He4','Diem_Chu','Xep_Loai'].includes(col));
 
   const handleScaleColToggle = (colName: string) => {
     if (selectedScaleCols.includes(colName)) {
@@ -84,7 +86,7 @@ export function Tab1Source() {
               className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-md cursor-pointer hover:bg-primary/90 transition-colors text-sm font-semibold"
             >
               <Upload className="h-4 w-4" />
-              SEND FILES (.CSV)
+              UPLOAD FILE (.CSV)
               <Input
                 id="file-upload"
                 type="file"
@@ -107,7 +109,7 @@ export function Tab1Source() {
                 className="ml-auto bg-emerald-600 hover:bg-emerald-700"
               >
                 <CheckCircle2 className="h-4 w-4 mr-2" />
-                1. START SCANNING DATA 
+                1. START SCANNING METADATA
               </Button>
             )}
           </div>
@@ -117,7 +119,7 @@ export function Tab1Source() {
             <div className="bg-amber-50 p-5 rounded-lg border border-amber-200 animate-in fade-in duration-300">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
                 <h3 className="text-sm font-bold text-amber-700 uppercase tracking-wide">
-                  2. Setting the Score for HUB
+                  2. HUB SCORE CONFIGURATION
                 </h3>
                 <div className="flex rounded-md shadow-sm">
                   <Button
@@ -134,7 +136,7 @@ export function Tab1Source() {
                     onClick={() => setUseHUBFormula(false)}
                     className="rounded-l-none"
                   >
-                    USE EXISTING SCORES
+                    USE EXISTING SCORE
                   </Button>
                 </div>
               </div>
@@ -142,34 +144,34 @@ export function Tab1Source() {
               {useHUBFormula ? (
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                   <div>
-                    <Label className="text-xs text-muted-foreground font-semibold mb-1">Diligence (10%)</Label>
+                    <Label className="text-xs text-muted-foreground font-semibold mb-1">Attendance (10%)</Label>
                     <Select value={hubCols.cc} onValueChange={(v) => setHubCols({...hubCols, cc: v})}>
-                      <SelectTrigger><SelectValue placeholder="-- Choose --" /></SelectTrigger>
+                      <SelectTrigger><SelectValue placeholder="-- Select --" /></SelectTrigger>
                       <SelectContent>
-                        {columnsInfo.map(c => (
-                          <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
+                        {dropdownCols.map(colName => (
+                          <SelectItem key={colName} value={colName}>{colName}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground font-semibold mb-1">Group Assignment (20%)</Label>
+                    <Label className="text-xs text-muted-foreground font-semibold mb-1">Group Work (20%)</Label>
                     <Select value={hubCols.btn} onValueChange={(v) => setHubCols({...hubCols, btn: v})}>
-                      <SelectTrigger><SelectValue placeholder="-- Choose --" /></SelectTrigger>
+                      <SelectTrigger><SelectValue placeholder="-- Select --" /></SelectTrigger>
                       <SelectContent>
-                        {columnsInfo.map(c => (
-                          <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
+                        {dropdownCols.map(colName => (
+                          <SelectItem key={colName} value={colName}>{colName}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground font-semibold mb-1">Individual Assignment (20%)</Label>
+                    <Label className="text-xs text-muted-foreground font-semibold mb-1">Individual Work (20%)</Label>
                     <Select value={hubCols.btcn} onValueChange={(v) => setHubCols({...hubCols, btcn: v})}>
-                      <SelectTrigger><SelectValue placeholder="-- Choose --" /></SelectTrigger>
+                      <SelectTrigger><SelectValue placeholder="-- Select --" /></SelectTrigger>
                       <SelectContent>
-                        {columnsInfo.map(c => (
-                          <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
+                        {dropdownCols.map(colName => (
+                          <SelectItem key={colName} value={colName}>{colName}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -177,10 +179,10 @@ export function Tab1Source() {
                   <div>
                     <Label className="text-xs text-muted-foreground font-semibold mb-1">Final Exam (50%)</Label>
                     <Select value={hubCols.thi} onValueChange={(v) => setHubCols({...hubCols, thi: v})}>
-                      <SelectTrigger><SelectValue placeholder="-- Choose --" /></SelectTrigger>
+                      <SelectTrigger><SelectValue placeholder="-- Select --" /></SelectTrigger>
                       <SelectContent>
-                        {columnsInfo.map(c => (
-                          <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
+                        {dropdownCols.map(colName => (
+                          <SelectItem key={colName} value={colName}>{colName}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -188,12 +190,12 @@ export function Tab1Source() {
                 </div>
               ) : (
                 <div className="mb-4">
-                  <Label className="text-xs text-muted-foreground font-semibold mb-1">Final Grade Column (10-point scale)</Label>
+                  <Label className="text-xs text-muted-foreground font-semibold mb-1">Final Score Column (Base 10)</Label>
                   <Select value={mainScoreCol} onValueChange={setMainScoreCol}>
-                    <SelectTrigger className="max-w-[300px]"><SelectValue placeholder="-- Choose --" /></SelectTrigger>
+                    <SelectTrigger className="max-w-[300px]"><SelectValue placeholder="-- Select --" /></SelectTrigger>
                     <SelectContent>
-                      {columnsInfo.map(c => (
-                        <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
+                      {dropdownCols.map(colName => (
+                        <SelectItem key={colName} value={colName}>{colName}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -205,7 +207,7 @@ export function Tab1Source() {
                 disabled={isLoading}
                 className="w-full bg-amber-600 hover:bg-amber-700"
               >
-                3. HUB CALCULATION & CONVERSION
+                3. CALCULATE & CONVERT TO HUB STANDARD
               </Button>
             </div>
           )}
@@ -215,7 +217,7 @@ export function Tab1Source() {
             <div className="border rounded-lg overflow-hidden animate-in fade-in duration-300">
               <div className="flex flex-wrap justify-between items-center p-4 bg-muted/50 border-b">
                 <h3 className="text-sm font-semibold text-foreground uppercase">
-                  Actual data table ({fullData.length} rows)
+                  Actual Data Table ({(fullData || []).length} rows)
                 </h3>
                 <div className="flex gap-2">
                   <Select value={filterGrade} onValueChange={setFilterGrade}>
@@ -225,11 +227,11 @@ export function Tab1Source() {
                     <SelectContent>
                       <SelectItem value="All">Filter: All</SelectItem>
                       <SelectItem value="Excellent">Excellent</SelectItem>
-                      <SelectItem value="Very good">Very good</SelectItem>
+                      <SelectItem value="Very Good">Very Good</SelectItem>
                       <SelectItem value="Good">Good</SelectItem>
                       <SelectItem value="Average">Average</SelectItem>
                       <SelectItem value="Weak">Weak</SelectItem>
-                      <SelectItem value="Faile">Faile</SelectItem>
+                      <SelectItem value="Fail">Fail</SelectItem>
                     </SelectContent>
                   </Select>
                   <Button size="sm" onClick={exportFilteredExcel} className="bg-emerald-600 hover:bg-emerald-700 h-8 text-xs">
@@ -241,7 +243,7 @@ export function Tab1Source() {
                 <Table>
                   <TableHeader className="bg-muted/50 sticky top-0">
                     <TableRow>
-                      {fullData.length > 0 && Object.keys(fullData[0])
+                      {(fullData || []).length > 0 && Object.keys(fullData[0] || {})
                         .filter(h => !['TBM_He10','TBM_He4','Diem_Chu','Xep_Loai'].includes(h))
                         .map((h, i) => (
                           <TableHead key={i} className="text-xs font-semibold whitespace-nowrap">{h}</TableHead>
@@ -252,9 +254,9 @@ export function Tab1Source() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredTableData.slice(0, 100).map((row, idx) => (
+                    {(filteredTableData || []).slice(0, 100).map((row, idx) => (
                       <TableRow key={idx} className="hover:bg-muted/30">
-                        {Object.keys(row)
+                        {Object.keys(row || {})
                           .filter(h => !['TBM_He10','TBM_He4','Diem_Chu','Xep_Loai'].includes(h))
                           .map((h, j) => (
                             <TableCell key={j} className="text-sm truncate max-w-[150px]">
@@ -302,14 +304,14 @@ export function Tab1Source() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {columnsInfo
+                    {(columnsInfo || [])
                       .filter(c => !['TBM_He10','TBM_He4','Diem_Chu','Xep_Loai'].includes(c.name))
                       .map((info, idx) => (
                         <TableRow key={idx} className="hover:bg-muted/30">
                           <TableCell className="truncate max-w-[120px]">{info.name}</TableCell>
                           <TableCell className="text-center">
-                            <span className={`px-2 py-0.5 text-[10px] font-bold rounded-md ${
-                              info.type === 'number' ? 'bg-primary/10 text-primary' : 'bg-emerald-100 text-emerald-700'
+                            <span className={`px-2 py-0.5 text-[10px] font-bold rounded-md uppercase ${
+                              info.type === 'SỐ' || info.type === 'NUMERIC' ? 'bg-primary/10 text-primary' : 'bg-emerald-100 text-emerald-700'
                             }`}>
                               {info.type}
                             </span>
@@ -323,13 +325,17 @@ export function Tab1Source() {
               <div className="lg:col-span-3 bg-card p-4 rounded-lg border h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={missingData || []} margin={{ top: 10, right: 10, left: -20, bottom: 40 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={THEME.gridLine} />
-                    <XAxis dataKey="column" stroke={THEME.textMuted} fontSize={11} tickFormatter={formatXAxis} angle={-45} tick={{ textAnchor: 'end', dy: 10 }} interval={0} />
-                    <YAxis stroke={THEME.textMuted} fontSize={11} />
-                    <Tooltip contentStyle={{ backgroundColor: THEME.bgBase, border: `1px solid ${THEME.cardBorder}`, borderRadius: '6px' }} />
-                    <Bar dataKey="System_NaN" name="Null" stackId="a" fill={THEME.danger} />
-                    <Bar dataKey="User_Miss" name="Incorrect formatting" stackId="a" fill={THEME.warning} radius={[4, 4, 0, 0]} />
-                  </BarChart>
+  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+  <XAxis dataKey="column" stroke="#64748b" fontSize={11} tickFormatter={formatXAxis} angle={-45} tick={{ textAnchor: 'end', dy: 10 }} interval={0} />
+  <YAxis stroke="#64748b" fontSize={11} />
+  
+  {/* Tắt cái nền xám to đùng khi hover */}
+  <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '6px' }} />
+  
+  {/* Ép kích thước cột nhỏ lại (maxBarSize) và set cứng màu luôn */}
+  <Bar dataKey="System_NaN" name="Null Values" stackId="a" fill="#ef4444" maxBarSize={40} />
+  <Bar dataKey="User_Miss" name="Incorrect Formatting" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} maxBarSize={40} />
+</BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
@@ -348,46 +354,46 @@ export function Tab1Source() {
           <CardContent className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-muted/50 p-4 rounded-lg border">
-                <Label className="text-xs font-bold text-foreground mb-2 block uppercase">Addressing Deficiencies</Label>
+                <Label className="text-xs font-bold text-foreground mb-2 block uppercase">Handling Missing Values</Label>
                 <Select value={processMode} onValueChange={setProcessMode}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Preserve the Original</SelectItem>
-                    <SelectItem value="drop">Drop NA</SelectItem>
-                    <SelectItem value="mean">Replace with Average</SelectItem>
+                    <SelectItem value="none">Preserve Original</SelectItem>
+                    <SelectItem value="drop">Drop NA (Rows with Errors)</SelectItem>
+                    <SelectItem value="mean">Replace with Mean</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="bg-muted/50 p-4 rounded-lg border">
-                <Label className="text-xs font-bold text-foreground mb-2 block uppercase">Number Normalization Algorithm</Label>
+                <Label className="text-xs font-bold text-foreground mb-2 block uppercase">Numerical Scaling Algorithm</Label>
                 <Select value={scaleType} onValueChange={setScaleType}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Skip Normalization</SelectItem>
+                    <SelectItem value="none">Skip Scaling</SelectItem>
                     <SelectItem value="standard">Standard Scaler (Z-Score)</SelectItem>
-                    <SelectItem value="minmax">MinMax Scaler (0-1)</SelectItem>
+                    <SelectItem value="minmax">MinMax Scaler (0-1 Range)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             
             <div className="bg-card p-4 rounded-lg border">
-              <Label className="text-xs font-bold text-foreground mb-3 block uppercase">Specify the column to be normalized:</Label>
+              <Label className="text-xs font-bold text-foreground mb-3 block uppercase">Specify Columns for Scaling:</Label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-[120px] overflow-y-auto">
-                {columnsInfo.map(c => (
+                {dropdownCols.map(colName => (
                   <label 
-                    key={c.name} 
+                    key={colName} 
                     className={`flex items-center gap-2 px-2 py-1.5 rounded text-sm cursor-pointer border transition-colors ${
-                      selectedScaleCols.includes(c.name) 
+                      selectedScaleCols.includes(colName) 
                         ? 'bg-primary/10 border-primary/30 text-primary' 
                         : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted'
                     }`}
                   >
                     <Checkbox
-                      checked={selectedScaleCols.includes(c.name)}
-                      onCheckedChange={() => handleScaleColToggle(c.name)}
+                      checked={selectedScaleCols.includes(colName)}
+                      onCheckedChange={() => handleScaleColToggle(colName)}
                     />
-                    <span className="truncate">{c.name}</span>
+                    <span className="truncate">{colName}</span>
                   </label>
                 ))}
               </div>
@@ -398,7 +404,7 @@ export function Tab1Source() {
               disabled={isLoading}
               className="w-full bg-emerald-600 hover:bg-emerald-700"
             >
-              CONFIRM CONFIGURATION & DATA TRANSFORMATION PROCESSING
+              CONFIRM CONFIGURATION & PROCESS DATA TRANSFORMATION
             </Button>
           </CardContent>
         </Card>

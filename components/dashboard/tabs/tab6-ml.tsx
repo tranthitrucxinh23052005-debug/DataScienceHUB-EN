@@ -55,7 +55,7 @@ export function Tab6ML() {
     runARIMA
   } = useDataContext();
 
-  const numericCols = columnsInfo.filter((c: any) => c.type === 'number');
+  const numericCols = columnsInfo?.filter((c: any) => c.type === 'NUMERIC');
 
   const handleKMeansColToggle = (colName: string) => {
     if (kmeansCols.includes(colName)) {

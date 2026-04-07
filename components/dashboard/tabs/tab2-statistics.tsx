@@ -25,7 +25,11 @@ export function Tab2Statistics() {
     boxplotData
   } = useDataContext();
 
-  const columnsInfo = columnsInfo.filter((c: any) => c.type === 'CHAR' && !['Diem_Chu','Xep_Loai'].includes(c.name));
+  // ĐÃ SỬA: Đổi tên biến lọc để không trùng với columnsInfo lấy từ Context
+  const categoryCols = (columnsInfo || []).filter((c: any) => 
+    c.type === 'CATEGORICAL' && 
+    !['Diem_Chu', 'Xep_Loai'].includes(c.name)
+);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -39,7 +43,7 @@ export function Tab2Statistics() {
         </Card>
         <Card className="hover:shadow-md transition-shadow border-l-4 border-l-blue-500">
           <CardContent className="pt-5">
-            <h4 className="text-xs uppercase text-muted-foreground font-semibold mb-1 tracking-wide">Avarage Score (Scale 10)</h4>
+            <h4 className="text-xs uppercase text-muted-foreground font-semibold mb-1 tracking-wide">Average Score (Scale 10)</h4>
             <span className="text-2xl font-bold text-primary">{kpiData.mean10}</span>
           </CardContent>
         </Card>
@@ -68,7 +72,7 @@ export function Tab2Statistics() {
               <SelectValue placeholder="-- Select the Class/Group Column--" />
             </SelectTrigger>
             <SelectContent>
-              {columnsInfo.map((c: any) => (
+              {categoryCols.map((c: any) => (
                 <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
               ))}
             </SelectContent>
@@ -79,8 +83,7 @@ export function Tab2Statistics() {
 
       {/* Main Charts Area */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        {/* 1. Histogram: Luôn hiển thị */}
+        {/* 1. Histogram */}
         <Card className="shadow-sm">
           <CardContent className="pt-5 h-[400px]">
             <h3 className="text-sm font-bold text-foreground uppercase mb-4 text-center">Distribution of Academic Performance Across the Course</h3>
@@ -97,7 +100,7 @@ export function Tab2Statistics() {
           </CardContent>
         </Card>
 
-        {/* 2. Stacked Bar: Hiện khi có classCol */}
+        {/* 2. Stacked Bar */}
         <Card className="shadow-sm">
           <CardContent className="pt-5 h-[400px] flex flex-col">
             <h3 className="text-sm font-bold text-foreground uppercase mb-4 text-center">Ranking Structure According to {classCol || "Class"}</h3>
@@ -127,7 +130,7 @@ export function Tab2Statistics() {
         </Card>
       </div>
 
-      {/* 3. Boxplot: Dàn hàng ngang bên dưới */}
+      {/* 3. Boxplot */}
       {classCol && (
         <Card className="shadow-sm animate-in slide-in-from-bottom duration-500">
           <CardContent className="pt-5">

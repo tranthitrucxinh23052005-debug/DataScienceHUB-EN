@@ -3,28 +3,17 @@
 import React, { createContext, useContext, useState, useRef, useEffect, useMemo, ReactNode } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-const API_URL = "https://tieuthetunhacongdang-tx-data-analytics-api.hf.space";
+const API_URL = "https://tieuthetunhacongdang-datasciencehub-en.hf.space";
 
-// --- MÃ MÀU CHUYÊN NGHIỆP ---
 export const THEME = {
-  bgBase: '#ffffff',          
-  bgGradient: 'none',
-  cardBg: '#ffffff', 
-  cardBorder: '#e2e8f0', 
-  primary: '#1d4ed8',         
-  primaryGlow: 'rgba(29, 78, 216, 0.2)',
-  success: '#059669',         
-  successGlow: 'rgba(5, 150, 105, 0.2)',
-  warning: '#d97706',         
-  danger: '#dc2626',          
-  textMain: '#1e293b',        
-  textMuted: '#64748b',       
-  gridLine: '#e2e8f0'
+  bgBase: '#ffffff', bgGradient: 'none', cardBg: '#ffffff', cardBorder: '#e2e8f0', 
+  primary: '#1d4ed8', primaryGlow: 'rgba(29, 78, 216, 0.2)',
+  success: '#059669', successGlow: 'rgba(5, 150, 105, 0.2)',
+  warning: '#d97706', danger: '#dc2626', textMain: '#1e293b', textMuted: '#64748b', gridLine: '#e2e8f0'
 };
 
 export const COLORS = ['#1d4ed8', '#059669', '#d97706', '#7c3aed', '#db2777', '#0d9488', '#e11d48', '#ca8a04'];
 
-// --- QUY CHẾ ĐÀO TẠO TÍN CHỈ HUB ---
 export const convertToHUBScale = (score10: any) => {
   const s = parseFloat(score10);
   if (isNaN(s)) return { letter: 'N/A', grade4: 0.0, group: 'N/A' };
@@ -49,28 +38,23 @@ export const formatXAxis = (tickItem: any) => {
 };
 
 interface DataContextType {
-  sidebarOpen: boolean; setSidebarOpen: any;
-  activeTab: number; setActiveTab: any;
-  isMusicPlaying: boolean; toggleMusic: any;
-  selectedFile: any; previewData: any[]; fullData: any[]; 
+  sidebarOpen: boolean; setSidebarOpen: any; activeTab: number; setActiveTab: any;
+  isMusicPlaying: boolean; toggleMusic: any; selectedFile: any; previewData: any[]; fullData: any[]; 
   loadingStatus: string; isLoading: boolean; statusType: string;
   stepDataChecked: boolean; stepProcessed: boolean; stepClustered: boolean;
   columnsInfo: any[]; totalRows: number; missingData: any;
-  useHUBFormula: boolean; setUseHUBFormula: any;
-  hubCols: any; setHubCols: any; mainScoreCol: string; setMainScoreCol: any;
-  classCol: string; setClassCol: any; filterGrade: string; setFilterGrade: any;
-  selectedStudentIdx: number; setSelectedStudentIdx: any;
+  useHUBFormula: boolean; setUseHUBFormula: any; hubCols: any; setHubCols: any;
+  mainScoreCol: string; setMainScoreCol: any; classCol: string; setClassCol: any;
+  filterGrade: string; setFilterGrade: any; selectedStudentIdx: number; setSelectedStudentIdx: any;
   processMode: string; setProcessMode: any; scaleType: string; setScaleType: any;
-  selectedScaleCols: string[]; setSelectedScaleCols: any;
-  biData: any; corrMatrix: any; chartType: string; setChartType: any;
-  xAxis: string; setXAxis: any; yAxis: string; setYAxis: any; aggFunc: string; setAggFunc: any;
-  aiReport: string; chartInsight: string; autoConfigs: any[];
+  selectedScaleCols: string[]; setSelectedScaleCols: any; biData: any; corrMatrix: any;
+  chartType: string; setChartType: any; xAxis: string; setXAxis: any; yAxis: string; setYAxis: any;
+  aggFunc: string; setAggFunc: any; aiReport: string; chartInsight: string; autoConfigs: any[];
   kClusters: number; setKClusters: any; kmeansData: any; kmeansCols: string[]; setKmeansCols: any;
   modelType: string; setModelType: any; targetCol: string; setTargetCol: any;
   featureCols: string[]; setFeatureCols: any; modelMetrics: any;
   arimaDateCol: string; setArimaDateCol: any; arimaTargetCol: string; setArimaTargetCol: any;
-  arimaSteps: number; setArimaSteps: any; arimaData: any;
-  reportRef: any; chartRef: any;
+  arimaSteps: number; setArimaSteps: any; arimaData: any; reportRef: any; chartRef: any;
   applyHUBScore: any; handleFileUpload: any; runCheckData: any; runProcessData: any;
   handleCleanData: any; handleAISummary: any; handleAutoDashboard: any; handleExportExcel: any;
   handleChartInsight: any; runKMeans: any; runTrainModel: any; runARIMA: any;
@@ -134,7 +118,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const updateStatus = (msg: string, type = 'success') => { setLoadingStatus(msg); setStatusType(type); };
 
-  // --- LOGIC HUB ---
   const applyHUBScore = () => {
     let newData: any[] = [];
     if (useHUBFormula) {
@@ -177,39 +160,20 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, [fullData, filterGrade]);
 
   const statsData = useMemo(() => {
-  // Kiểm tra nếu chưa có dữ liệu hoặc chưa chọn cột Lớp
-  if (!fullData.length || !classCol) return { hist: [], classif: [] };
-
-  const bins: any = { 'F': 0, 'D-': 0, 'D': 0, 'D+': 0, 'C-': 0, 'C': 0, 'C+': 0, 'B-': 0, 'B': 0, 'B+': 0, 'A-': 0, 'A': 0, 'A+': 0 };
-  const classMap: any = {};
-
-  fullData.forEach(row => {
-    // 1. Tính Histogram (Phân phối chung)
-    const letter = row['Diem_Chu'];
-    if (letter && bins[letter] !== undefined) {
-      bins[letter]++;
-    }
-
-    // 2. Tính Stacked Bar (Theo lớp)
-    const cls = String(row[classCol] || 'Khác'); // Ép kiểu string để tránh lỗi số
-    const group = row['Xep_Loai'];
-
-    if (!classMap[cls]) {
-      classMap[cls] = { name: cls, count: 0, 'Excellent': 0, 'Very Good': 0, 'Good': 0, 'Average': 0, 'Weak': 0, 'Fail': 0 };
-    }
-
-    classMap[cls].count++;
-    // Quan trọng: Key ở đây phải khớp 100% với chữ ở thẻ <Bar dataKey="..." /> bên Tab2
-    if (classMap[cls][group] !== undefined) {
-      classMap[cls][group]++;
-    }
-  });
-
-  return { 
-    hist: Object.keys(bins).map(k => ({ bin: k, count: bins[k] })), 
-    classif: Object.values(classMap) 
-  };
-}, [fullData, classCol]);
+    if (!fullData.length || !classCol) return { hist: [], classif: [] };
+    const bins: any = { 'F': 0, 'D-': 0, 'D': 0, 'D+': 0, 'C-': 0, 'C': 0, 'C+': 0, 'B-': 0, 'B': 0, 'B+': 0, 'A-': 0, 'A': 0, 'A+': 0 };
+    const classMap: any = {};
+    fullData.forEach(row => {
+      const letter = row['Diem_Chu'];
+      if (letter && bins[letter] !== undefined) bins[letter]++;
+      const cls = String(row[classCol] || 'Khác'); 
+      const group = row['Xep_Loai'];
+      if (!classMap[cls]) classMap[cls] = { name: cls, count: 0, 'Excellent': 0, 'Very Good': 0, 'Good': 0, 'Average': 0, 'Weak': 0, 'Fail': 0 };
+      classMap[cls].count++;
+      if (classMap[cls][group] !== undefined) classMap[cls][group]++;
+    });
+    return { hist: Object.keys(bins).map(k => ({ bin: k, count: bins[k] })), classif: Object.values(classMap) };
+  }, [fullData, classCol]);
 
   const boxplotData = useMemo(() => {
     if (!fullData.length || !fullData[0].hasOwnProperty('TBM_He4') || !classCol) return [];
@@ -226,84 +190,51 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const personalRadar = useMemo(() => {
     if (!fullData.length || selectedStudentIdx >= fullData.length) return { data: [], warning: "", info: null };
-    const numCols = columnsInfo.filter(c => c.type === 'number' && !['TBM_He10','TBM_He4'].includes(c.name)).map(c => c.name).slice(0, 6);
+    const numCols = (columnsInfo || []).filter(c => c.type === 'NUMERIC' && !['TBM_He10','TBM_He4'].includes(c.name)).map(c => c.name).slice(0, 6);
     const student = fullData[selectedStudentIdx];
-    const data = numCols.map(col => ({ subject: col, studentScore: convertToHUBScale(student[col]).grade4, classAvg: convertToHUBScale(fullData.reduce((a, b) => a + (parseFloat(b[col]) || 0), 0) / fullData.length).grade4 }));
+    const data = numCols.map(col => {
+      const studentVal = parseFloat(student[col]) || 0;
+      const avgVal = fullData.length > 0 ? fullData.reduce((a, b) => a + (parseFloat(b[col]) || 0), 0) / fullData.length : 0;
+      return { subject: col, studentScore: convertToHUBScale(studentVal).grade4, classAvg: convertToHUBScale(avgVal).grade4 };
+    });
     return { data, warning: "✅ DATA IS READY", info: student };
   }, [fullData, selectedStudentIdx, columnsInfo]);
 
   const scatterWithTrend = useMemo(() => {
-  // Bỏ điều kiện chartType !== 'Scatter' để Tab 4 luôn có dữ liệu nếu đã Process Data
-  if (!biData || !xAxis || !yAxis || biData.length < 2) return { data: biData, trend: [] };
-  
-  let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0; 
-  const n = biData.length; 
-  let minX = Infinity, maxX = -Infinity;
-  
-  biData.forEach((d: any) => {
-    const x = parseFloat(d[xAxis]); 
-    const y = parseFloat(d[yAxis]);
-    if (!isNaN(x) && !isNaN(y)) { 
-      sumX += x; sumY += y; sumXY += x * y; sumX2 += x * x; 
-      minX = Math.min(minX, x); 
-      maxX = Math.max(maxX, x); 
-    }
-  });
-
-  // Tránh chia cho 0 nếu tất cả X bằng nhau
-  const denominator = (n * sumX2 - sumX * sumX);
-  if (denominator === 0) return { data: biData, trend: [] };
-
-  const m = (n * sumXY - sumX * sumY) / denominator; 
-  const b = (sumY - m * sumX) / n;
-  
-  return { 
-    data: biData, 
-    trend: [ 
-      { [xAxis]: minX, [yAxis]: m * minX + b }, 
-      { [xAxis]: maxX, [yAxis]: m * maxX + b } 
-    ] 
-  };
-}, [biData, xAxis, yAxis]); // Bỏ chartType khỏi dependency
+    if (!biData || !xAxis || !yAxis || biData.length < 2) return { data: biData, trend: [] };
+    let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0; const n = biData.length; let minX = Infinity, maxX = -Infinity;
+    biData.forEach((d: any) => {
+      const x = parseFloat(d[xAxis]); const y = parseFloat(d[yAxis]);
+      if (!isNaN(x) && !isNaN(y)) { sumX += x; sumY += y; sumXY += x * y; sumX2 += x * x; minX = Math.min(minX, x); maxX = Math.max(maxX, x); }
+    });
+    const denominator = (n * sumX2 - sumX * sumX);
+    if (denominator === 0) return { data: biData, trend: [] };
+    const m = (n * sumXY - sumX * sumY) / denominator; const b = (sumY - m * sumX) / n;
+    return { data: biData, trend: [ { [xAxis]: minX, [yAxis]: m * minX + b }, { [xAxis]: maxX, [yAxis]: m * maxX + b } ] };
+  }, [biData, xAxis, yAxis]);
 
   const autoDashboardDatasets = useMemo(() => {
-  if (!fullData.length || autoConfigs.length === 0) return [];
-  return autoConfigs.map(config => {
-    const { x: xCol, y: yCol, agg: aggFunc } = config; 
-    const grouped: any = {};
-
-    fullData.forEach(row => {
-      const xVal = row[xCol] || 'Unknown';
-      // Nếu là hàm đếm (count), chúng ta không cần quan tâm yVal có phải là số hay không
-      const yVal = aggFunc === 'count' ? 1 : parseFloat(row[yCol]);
-
-      if (!grouped[xVal]) grouped[xVal] = { sum: 0, count: 0 };
-      
-      if (aggFunc === 'count') {
-        grouped[xVal].count += 1;
-      } else if (!isNaN(yVal)) {
-        grouped[xVal].sum += yVal;
-        grouped[xVal].count += 1;
-      }
+    if (!Array.isArray(fullData) || fullData.length === 0 || !Array.isArray(autoConfigs) || autoConfigs.length === 0) return [];
+    return autoConfigs.map(config => {
+      const { x: xCol, y: yCol, agg: aggFunc } = config; const grouped: any = {};
+      fullData.forEach(row => {
+        const xVal = row[xCol] || 'Unknown';
+        const yVal = aggFunc === 'count' ? 1 : parseFloat(row[yCol]);
+        if (!grouped[xVal]) grouped[xVal] = { sum: 0, count: 0 };
+        if (aggFunc === 'count') { grouped[xVal].count += 1; } 
+        else if (!isNaN(yVal)) { grouped[xVal].sum += yVal; grouped[xVal].count += 1; }
+      });
+      const processed = Object.keys(grouped).map(key => {
+        let finalY = 0;
+        if (aggFunc === 'count') finalY = grouped[key].count;
+        else if (aggFunc === 'sum') finalY = grouped[key].sum;
+        else finalY = grouped[key].sum / grouped[key].count;
+        return { [xCol]: key, [yCol]: parseFloat(finalY.toFixed(2)) };
+      });
+      return processed.sort((a: any, b: any) => b[yCol] - a[yCol]);
     });
+  }, [fullData, autoConfigs]);
 
-    const processed = Object.keys(grouped).map(key => {
-      let finalY = 0;
-      if (aggFunc === 'count') finalY = grouped[key].count;
-      else if (aggFunc === 'sum') finalY = grouped[key].sum;
-      else finalY = grouped[key].sum / grouped[key].count; // mặc định là mean
-
-      return { 
-        [xCol]: key, 
-        [yCol]: parseFloat(finalY.toFixed(2)) 
-      } as Record<string, any>;
-    });
-
-    return processed.sort((a: any, b: any) => b[yCol] - a[yCol]);
-  });
-}, [fullData, autoConfigs]);
-
-  // --- AUDIO & UTILS ---
   useEffect(() => { 
     bgMusicRef.current = new Audio('/backgound.mp3'); 
     if(bgMusicRef.current) { bgMusicRef.current.loop = true; bgMusicRef.current.volume = 0.25; }
@@ -314,117 +245,63 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setIsMusicPlaying(!isMusicPlaying);
   };
 
-const parseMarkdown = (text: string) => {
-  if (!text) return null;
+  const parseMarkdown = (text: string) => {
+    if (!text) return null;
+    const cleanText = text.replace(/\*\*\*\*/g, '').replace(/^[ \t]*[\*\-][ \t]+/gm, '* ');
+    const lines = cleanText.split('\n');
+    const elements: React.ReactNode[] = [];
+    let currentTable: string[][] = [];
+    let isInsideTable = false;
 
-  // 1. Chuẩn hóa dữ liệu: Khử sạch dấu **** và các khoảng trắng thừa
-  const cleanText = text.replace(/\*\*\*\*/g, '').replace(/^[ \t]*[\*\-][ \t]+/gm, '* ');
-  const lines = cleanText.split('\n');
-  const elements: React.ReactNode[] = [];
-  let currentTable: string[][] = [];
-  let isInsideTable = false;
-
-  lines.forEach((line, index) => {
-    const trimmedLine = line.trim();
-
-    // XỬ LÝ BẢNG (Dựa trên ký tự |)
-    if (trimmedLine.startsWith('|')) {
-      isInsideTable = true;
-      if (!trimmedLine.includes('---')) {
-        const cells = trimmedLine
-          .split('|')
-          .filter((_, i, arr) => i > 0 && i < arr.length - 1)
-          .map(c => c.trim().replace(/\*\*/g, '')); // Khử ** trong ô bảng
-        if (cells.length > 0) currentTable.push(cells);
-      }
-      return;
-    } 
-
-    // Nếu dòng hiện tại không phải bảng nhưng trước đó đang trong bảng -> Render bảng
-    if (isInsideTable && !trimmedLine.startsWith('|')) {
-      if (currentTable.length > 0) {
-        elements.push(renderTable(currentTable, `table-${index}`));
-      }
-      currentTable = [];
-      isInsideTable = false;
-    }
-
-    // XỬ LÝ CÁC ĐỊNH DẠNG KHÁC
-    if (!isInsideTable && trimmedLine !== '') {
-      // Tiêu đề (### hoặc số thứ tự bôi đậm)
-      if (trimmedLine.startsWith('###') || /^\d+\./.test(trimmedLine)) {
-        const titleText = trimmedLine.replace('###', '').replace(/\*\*/g, '').trim();
-        elements.push(
-          <h3 key={index} className="text-lg font-black text-blue-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3 uppercase tracking-tight">
-            {titleText}
-          </h3>
-        );
+    lines.forEach((line, index) => {
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith('|')) {
+        isInsideTable = true;
+        if (!trimmedLine.includes('---')) {
+          const cells = trimmedLine.split('|').filter((_, i, arr) => i > 0 && i < arr.length - 1).map(c => c.trim().replace(/\*\*/g, ''));
+          if (cells.length > 0) currentTable.push(cells);
+        }
+        return;
       } 
-      // Danh sách (Bullet points)
-      else if (trimmedLine.startsWith('*')) {
-        elements.push(
-          <li key={index} className="ml-6 list-disc mb-2 text-slate-700 leading-relaxed marker:text-blue-500">
-            {renderFormattedText(trimmedLine.substring(1).trim())}
-          </li>
-        );
+      if (isInsideTable && !trimmedLine.startsWith('|')) {
+        if (currentTable.length > 0) { elements.push(renderTable(currentTable, `table-${index}`)); }
+        currentTable = []; isInsideTable = false;
       }
-      // Đường phân cách
-      else if (trimmedLine === '---') {
-        elements.push(<hr key={index} className="my-6 border-slate-200" />);
+      if (!isInsideTable && trimmedLine !== '') {
+        if (trimmedLine.startsWith('###') || /^\d+\./.test(trimmedLine)) {
+          const titleText = trimmedLine.replace('###', '').replace(/\*\*/g, '').trim();
+          elements.push(<h3 key={index} className="text-lg font-black text-blue-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3 uppercase tracking-tight">{titleText}</h3>);
+        } 
+        else if (trimmedLine.startsWith('*')) {
+          elements.push(<li key={index} className="ml-6 list-disc mb-2 text-slate-700 leading-relaxed marker:text-blue-500">{renderFormattedText(trimmedLine.substring(1).trim())}</li>);
+        }
+        else if (trimmedLine === '---') {
+          elements.push(<hr key={index} className="my-6 border-slate-200" />);
+        }
+        else {
+          elements.push(<p key={index} className="mb-4 text-slate-700 leading-relaxed text-justify">{renderFormattedText(trimmedLine)}</p>);
+        }
       }
-      // Văn bản thường
-      else {
-        elements.push(
-          <p key={index} className="mb-4 text-slate-700 leading-relaxed text-justify">
-            {renderFormattedText(trimmedLine)}
-          </p>
-        );
-      }
-    }
-  });
+    });
+    if (currentTable.length > 0) elements.push(renderTable(currentTable, 'table-final'));
+    return elements;
+  };
 
-  if (currentTable.length > 0) elements.push(renderTable(currentTable, 'table-final'));
-  return elements;
-};
+  const renderFormattedText = (text: string) => {
+    if (!text) return '';
+    const parts = text.split(/\*\*(.*?)\*\*/g);
+    return parts.map((part, i) => i % 2 === 1 ? <strong key={i} className="text-blue-900 font-bold">{part}</strong> : part);
+  };
 
-// HÀM PHỤ: Biến **text** thành <strong>text</strong> và khử sạch dấu sao
-const renderFormattedText = (text: string) => {
-  if (!text) return '';
-  // Tách chuỗi theo cặp **
-  const parts = text.split(/\*\*(.*?)\*\*/g);
-  return parts.map((part, i) => 
-    i % 2 === 1 ? <strong key={i} className="text-blue-900 font-bold">{part}</strong> : part
+  const renderTable = (rows: string[][], key: string) => (
+    <div key={key} className="my-6 overflow-hidden border border-slate-200 rounded-xl shadow-md">
+      <table className="w-full text-sm border-collapse bg-white">
+        <thead><tr className="bg-slate-900 text-white">{rows[0].map((cell, i) => (<th key={i} className="p-3 text-left font-bold uppercase border-r border-slate-700 last:border-0">{cell}</th>))}</tr></thead>
+        <tbody>{rows.slice(1).map((row, i) => (<tr key={i} className="border-b border-slate-100 last:border-0 hover:bg-blue-50/50 transition-colors">{row.map((cell, j) => (<td key={j} className="p-3 text-slate-700 border-r border-slate-100 last:border-0">{cell}</td>))}</tr>))}</tbody>
+      </table>
+    </div>
   );
-};
 
-// HÀM PHỤ: Dựng bảng chuyên nghiệp cho Data Science
-const renderTable = (rows: string[][], key: string) => (
-  <div key={key} className="my-6 overflow-hidden border border-slate-200 rounded-xl shadow-md">
-    <table className="w-full text-sm border-collapse bg-white">
-      <thead>
-        <tr className="bg-slate-900 text-white">
-          {rows[0].map((cell, i) => (
-            <th key={i} className="p-3 text-left font-bold uppercase border-r border-slate-700 last:border-0">
-              {cell}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.slice(1).map((row, i) => (
-          <tr key={i} className="border-b border-slate-100 last:border-0 hover:bg-blue-50/50 transition-colors">
-            {row.map((cell, j) => (
-              <td key={j} className="p-3 text-slate-700 border-r border-slate-100 last:border-0">
-                {cell}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
-  // --- API HANDLERS ---
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -446,19 +323,56 @@ const renderTable = (rows: string[][], key: string) => (
     }
   };
 
+  // ==========================================
+  // CHIÊU BẢO ĐẢM TÍNH MẠNG LÚC 4 GIỜ SÁNG 🚨
+  // ==========================================
   const runCheckData = async () => {
     setIsLoading(true); updateStatus('SCAN DATA...', 'warning');
     const fd = new FormData(); fd.append('file', selectedFile as Blob);
     try {
       const res = await fetch(`${API_URL}/api/upload`, { method: 'POST', body: fd });
       const result = await res.json();
+      
       if (result.status === 'success') {
-        setColumnsInfo(result.columns_info); setMissingData(result.missing_stats); setTotalRows(result.total_rows);
-        const cats = result.columns_info.filter((c: any) => c.type === 'CHAR').map((c: any) => c.name);
-        if (cats.length) setClassCol(cats[0]);
-        setStepDataChecked(true); updateStatus('SCAN FINISH.', 'success');
-      } else toast({ title: "Error", description: result.message, variant: "destructive" });
-    } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); } finally { setIsLoading(false); }
+        // Cố gắng lấy data từ API (đón đầu mọi loại key Tiếng Anh/Tiếng Việt)
+        let cols = result.columns_info || result.columnsInfo || result.columns || [];
+        let missing = result.missing_stats || result.missingStats || result.missing || [];
+
+        // NẾU API LÀM PHẢN VÀ TRẢ VỀ RỖNG, TỰ ĐỘNG LẤY TỪ EXCEL RA ĐỂ HIỂN THỊ!
+        if ((!cols || cols.length === 0) && fullData.length > 0) {
+          console.log("⚠️ API returned empty, using fallback logic!");
+          const keys = Object.keys(fullData[0]).filter(k => !['TBM_He10','TBM_He4','Diem_Chu','Xep_Loai'].includes(k));
+          
+          cols = keys.map(k => ({
+            name: k,
+            type: typeof fullData[0][k] === 'number' ? 'NUMERIC' : 'CATEGORICAL',
+            nan_count: fullData.filter(r => r[k] === null || r[k] === '' || r[k] === undefined).length
+          }));
+
+          missing = keys.map(k => ({
+            column: k,
+            System_NaN: fullData.filter(r => r[k] === null || r[k] === '' || r[k] === undefined).length,
+            User_Miss: 0
+          }));
+        }
+
+        setColumnsInfo(cols); 
+        setMissingData(missing); 
+        setTotalRows(result.total_rows || fullData.length);
+        
+        const cats = cols.filter((c: any) => c.type === 'CATEGORICAL').map((c: any) => c.name);
+        if (cats.length > 0) setClassCol(cats[0]); else setClassCol('');
+        
+        setStepDataChecked(true); 
+        updateStatus('SCAN FINISHED.', 'success');
+      } else {
+        toast({ title: "Error", description: result.message || "Unknown API Error", variant: "destructive" });
+      }
+    } catch (e: any) { 
+      toast({ title: "Error", description: e.message, variant: "destructive" }); 
+    } finally { 
+      setIsLoading(false); 
+    }
   };
 
   const runProcessData = async () => {
@@ -469,7 +383,7 @@ const renderTable = (rows: string[][], key: string) => (
     try {
       const res = await fetch(`${API_URL}/api/process-data`, { method: 'POST', body: fd });
       const r = await res.json();
-      if (r.status === 'success') { setBiData(r.data); setCorrMatrix(r.correlation); setStepProcessed(true); if(activeTab === 1) setActiveTab(5); updateStatus('XỬ LÝ XONG.', 'success'); }
+      if (r.status === 'success') { setBiData(r.data); setCorrMatrix(r.correlation); setStepProcessed(true); if(activeTab === 1) setActiveTab(5); updateStatus('PROCESSED.', 'success'); }
     } catch (e) { toast({ title: "Error", description: "Error connecting API", variant: "destructive" }); } finally { setIsLoading(false); }
   };
 
@@ -478,7 +392,7 @@ const renderTable = (rows: string[][], key: string) => (
       const fd = new FormData(); fd.append("file", selectedFile as Blob);
       const res = await fetch(`${API_URL}/api/clean-data`, { method: "POST", body: fd });
       const blob = await res.blob(); const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a"); a.href = url; a.download = "Data_Sach.csv"; a.click();
+      const a = document.createElement("a"); a.href = url; a.download = "Cleaned_Data.csv"; a.click();
       updateStatus('CLEAN DATA HAS BEEN DOWNLOADED.', 'success');
     } catch (e) { toast({ title: "Error", description: "Cleaning error", variant: "destructive" }); } finally { setIsLoading(false); }
   };
@@ -504,103 +418,41 @@ const renderTable = (rows: string[][], key: string) => (
       const fd = new FormData(); fd.append("file", selectedFile as Blob);
       const res = await fetch(`${API_URL}/api/export-excel`, { method: "POST", body: fd });
       const blob = await res.blob(); const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a"); a.href = url; a.download = "Bao_Cao.xlsx"; a.click();
+      const a = document.createElement("a"); a.href = url; a.download = "Academic_Report.xlsx"; a.click();
       updateStatus('EXPORTED TO EXCEL.', 'success');
     } catch (e) { toast({ title: "Error", description: "Error API", variant: "destructive" }); } finally { setIsLoading(false); }
   };
 
-const handleChartInsight = async () => {
-  if (!chartRef.current) {
-    return toast({ 
-      title: "Error", 
-      description: "Biểu đồ trống, không thể phân tích.", 
-      variant: "destructive" 
-    });
-  }
+  const handleChartInsight = async () => {
+    if (!chartRef.current) return toast({ title: "Error", description: "Chart empty.", variant: "destructive" });
+    setIsLoading(true); updateStatus('AI PERCEIVING VISUALS...', 'warning');
 
-  setIsLoading(true);
-  updateStatus('AI IS QUESTING VISUAL PERCEPTION...', 'warning');
+    try {
+      const html2canvasLib = (await import('html2canvas')).default;
+      const canvas = await html2canvasLib(chartRef.current, {
+        scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false,
+      });
 
-  try {
-    // 1. Import động thư viện
-    const html2canvasLib = (await import('html2canvas')).default;
-    const element = chartRef.current;
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error("Unable to generate image data.");
 
-    // 2. Tiến hành chụp ảnh biểu đồ
-    const canvas = await html2canvasLib(element, {
-      scale: 2, // Tăng scale lên 2 để AI nhìn rõ số liệu hơn
-      useCORS: true,
-      backgroundColor: '#ffffff',
-      logging: false,
-      onclone: (clonedDoc) => {
-        // Quét toàn bộ phần tử trong bản sao để xử lý màu lỗi
-        const allElements = clonedDoc.querySelectorAll('*');
-        const unsupportedColors = ['oklab', 'oklch', 'lab', 'lch'];
+      const fd = new FormData();
+      fd.append("file", blob, "chart_analysis.png");
 
-        allElements.forEach((el) => {
-          const node = el as HTMLElement;
-          const style = window.getComputedStyle(node);
+      const res = await fetch(`${API_URL}/api/chart-insight`, { method: "POST", body: fd });
+      const d = await res.json();
 
-          // Kiểm tra và ép màu chữ về mã HEX an toàn
-          if (unsupportedColors.some(type => style.color.includes(type))) {
-            node.style.setProperty('color', '#1e293b', 'important');
-          }
-
-          // Kiểm tra và ép màu nền (thanh biểu đồ, card...)
-          if (unsupportedColors.some(type => style.backgroundColor.includes(type))) {
-            // Nếu là nền của biểu đồ/thanh bar, ép về màu xanh chuẩn HUB hoặc trắng
-            const isBar = node.classList.contains('recharts-bar-rectangle');
-            node.style.setProperty('background-color', isBar ? '#1d4ed8' : '#ffffff', 'important');
-          }
-
-          // Kiểm tra và ép màu viền
-          if (unsupportedColors.some(type => style.borderColor.includes(type))) {
-            node.style.setProperty('border-color', '#e2e8f0', 'important');
-          }
-
-          // Triệt tiêu các hiệu ứng filter/blur hiện đại thường đi kèm màu lab gây lỗi render
-          if (style.filter !== 'none' || style.backdropFilter !== 'none') {
-            node.style.setProperty('filter', 'none', 'important');
-            node.style.setProperty('backdrop-filter', 'none', 'important');
-          }
-        });
+      if (d.status === "success" || d.insight) {
+        setChartInsight(d.insight); updateStatus('AI ANALYSIS FINISHED.', 'success');
+      } else {
+        updateStatus('AI REFUSES TO ANALYZE', 'error');
       }
-    });
-
-    // 3. Chuyển canvas thành Blob để gửi lên API
-    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
-    if (!blob) throw new Error("Unable to generate image data from the chart.");
-
-    const fd = new FormData();
-    fd.append("file", blob, "chart_analysis.png");
-
-    // 4. Gọi API AI Insight
-    const res = await fetch(`${API_URL}/api/chart-insight`, { 
-      method: "POST", 
-      body: fd 
-    });
-
-    const d = await res.json();
-
-    if (d.status === "success" || d.insight) {
-      setChartInsight(d.insight);
-      updateStatus('AI has finished its analysis.', 'success');
-    } else {
-      updateStatus(d.message || 'AI REFUSES TO ANALYZE', 'error');
+    } catch (error) {
+      updateStatus('VISUAL QUERY ERROR', 'error');
+    } finally {
+      setIsLoading(false);
     }
-
-  } catch (error) {
-    console.error("Image Rendering Error for AI:", error);
-    updateStatus('VISUAL QUERY ERROR', 'error');
-    toast({
-      title: "System Error",
-      description: "Unable to send chart data to AI. Please check your connection!",
-      variant: "destructive"
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const runKMeans = async () => {
     if (kmeansCols.length < 2) return toast({ title: "Error", description: "Two variables are needed..", variant: "destructive" });
@@ -608,7 +460,7 @@ const handleChartInsight = async () => {
     fd.append('scale_type', scaleType); fd.append('scale_cols', selectedScaleCols.join(',')); fd.append('kmeans_cols', kmeansCols.join(','));
     try {
       const res = await fetch(`${API_URL}/api/kmeans-pipeline?k=${kClusters}`, { method: 'POST', body: fd });
-      const r = await res.json(); setKmeansData({ features: r.features, centers: r.centers, scatter: r.scatter_data }); setStepClustered(true); updateStatus('PHÂN CỤM XONG.', 'success');
+      const r = await res.json(); setKmeansData({ features: r.features, centers: r.centers, scatter: r.scatter_data }); setStepClustered(true); updateStatus('CLUSTERING DONE.', 'success');
     } catch (e) { toast({ title: "Error", description: "Error API", variant: "destructive" }); } finally { setIsLoading(false); }
   };
 
@@ -635,55 +487,28 @@ const handleChartInsight = async () => {
   const exportFilteredExcel = () => {
     let csv = "data:text/csv;charset=utf-8,"; const heads = Object.keys(filteredTableData[0]); csv += heads.join(",") + "\r\n";
     filteredTableData.forEach(r => csv += heads.map(h => r[h]).join(",") + "\r\n");
-    const link = document.createElement("a"); link.href = encodeURI(csv); link.download = "Loc_Data.csv"; link.click();
+    const link = document.createElement("a"); link.href = encodeURI(csv); link.download = "Filtered_Data.csv"; link.click();
   };
 
   const exportPDF = async () => {
-    if (typeof window === 'undefined') return;
-    updateStatus('Creating a print copy...', 'warning');
-    const element = reportRef.current;
-    if (!element) return;
-
+    if (typeof window === 'undefined' || !reportRef.current) return;
+    updateStatus('PRINTING PDF...', 'warning');
     try {
-      // Import động thư viện mới và jsPDF
-      const [htmlToImage, jspdfLib] = await Promise.all([
-        import('html-to-image'),
-        import('jspdf')
-      ]);
-      const jsPDF = jspdfLib.jsPDF;
-
-      // html-to-image chụp ảnh trực tiếp bằng engine của trình duyệt (Dẹp tan mọi lỗi lab/oklab)
-      const dataUrl = await htmlToImage.toJpeg(element, { 
-        quality: 0.95, 
-        backgroundColor: '#ffffff',
-        // Bỏ qua các hình ảnh bị lỗi CORS nếu có
-        skipFonts: false,
-      });
-
-      updateStatus('PACKAGING PDF...', 'warning');
-      
-      const pdf = new jsPDF('p', 'mm', 'a4');
+      const [htmlToImage, jspdfLib] = await Promise.all([import('html-to-image'), import('jspdf')]);
+      const dataUrl = await htmlToImage.toJpeg(reportRef.current, { quality: 0.95, backgroundColor: '#ffffff' });
+      const pdf = new jspdfLib.jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth(); 
-      
-      // Tạo một đối tượng ảnh để lấy tỷ lệ thật
-      const img = new Image();
-      img.src = dataUrl;
+      const img = new Image(); img.src = dataUrl;
       await new Promise((resolve) => { img.onload = resolve; });
-
       const pdfHeight = (img.height * pdfWidth) / img.width;
-      
       pdf.addImage(dataUrl, 'JPEG', 0, 0, pdfWidth, pdfHeight); 
-      pdf.save('Bao_Cao_HUB_ThanhCong.pdf');
-      
-      updateStatus('ĐÃ XUẤT PDF THÀNH CÔNG 🎉', 'success');
+      pdf.save('Academic_Report.pdf');
+      updateStatus('PDF EXPORTED 🎉', 'success');
     } catch (error) {
-      console.error("Error export PDF:", error);
-      updateStatus('Error RENDER', 'error');
-      // Lỡ có lỗi thì vẫn phải dọn dẹp sạch sẽ
-      const cleanup = document.querySelectorAll('[data-tx-id]');
-      cleanup.forEach(el => el.removeAttribute('data-tx-id'));
+      updateStatus('RENDER ERROR', 'error');
     }
   };
+
   return (
     <DataContext.Provider value={{
       sidebarOpen, setSidebarOpen, activeTab, setActiveTab, isMusicPlaying, toggleMusic,

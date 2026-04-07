@@ -58,7 +58,7 @@ export type RadarData = {
 
 // --- CÁC HẰNG SỐ & HÀM TIỆN ÍCH (HELPER) ---
 
-export const API_URL = "https://tieuthetunhacongdang-tx-data-analytics-api.hf.space";
+export const API_URL = "https://tieuthetunhacongdang-datasciencehub-en.hf.space";
 
 export const COLORS = ['#1d4ed8', '#059669', '#d97706', '#7c3aed', '#db2777', '#0d9488', '#e11d48', '#ca8a04'];
 

@@ -29,7 +29,7 @@ export function Tab4Correlation() {
     personalRadar
   } = useDataContext();
 
-  const idCol = columnsInfo.find((c: any) => c.type === 'CHAR' && !['Diem_Chu','Xep_Loai'].includes(c.name))?.name
+  const idCol = columnsInfo.find((c: any) => c.type === 'CATEGORICAL' && !['Diem_Chu','Xep_Loai'].includes(c.name))?.name
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
