@@ -146,7 +146,7 @@ export function Tab1Source() {
                     <Select value={hubCols.cc} onValueChange={(v) => setHubCols({...hubCols, cc: v})}>
                       <SelectTrigger><SelectValue placeholder="-- Choose --" /></SelectTrigger>
                       <SelectContent>
-                        {numericCols.map(c => (
+                        {columnsInfo.map(c => (
                           <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
                         ))}
                       </SelectContent>
@@ -157,7 +157,7 @@ export function Tab1Source() {
                     <Select value={hubCols.btn} onValueChange={(v) => setHubCols({...hubCols, btn: v})}>
                       <SelectTrigger><SelectValue placeholder="-- Choose --" /></SelectTrigger>
                       <SelectContent>
-                        {numericCols.map(c => (
+                        {columnsInfo.map(c => (
                           <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
                         ))}
                       </SelectContent>
@@ -168,7 +168,7 @@ export function Tab1Source() {
                     <Select value={hubCols.btcn} onValueChange={(v) => setHubCols({...hubCols, btcn: v})}>
                       <SelectTrigger><SelectValue placeholder="-- Choose --" /></SelectTrigger>
                       <SelectContent>
-                        {numericCols.map(c => (
+                        {columnsInfo.map(c => (
                           <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
                         ))}
                       </SelectContent>
@@ -179,7 +179,7 @@ export function Tab1Source() {
                     <Select value={hubCols.thi} onValueChange={(v) => setHubCols({...hubCols, thi: v})}>
                       <SelectTrigger><SelectValue placeholder="-- Choose --" /></SelectTrigger>
                       <SelectContent>
-                        {numericCols.map(c => (
+                        {columnsInfo.map(c => (
                           <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
                         ))}
                       </SelectContent>
@@ -192,7 +192,7 @@ export function Tab1Source() {
                   <Select value={mainScoreCol} onValueChange={setMainScoreCol}>
                     <SelectTrigger className="max-w-[300px]"><SelectValue placeholder="-- Choose --" /></SelectTrigger>
                     <SelectContent>
-                      {numericCols.map(c => (
+                      {columnsInfo.map(c => (
                         <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
                       ))}
                     </SelectContent>
@@ -374,7 +374,7 @@ export function Tab1Source() {
             <div className="bg-card p-4 rounded-lg border">
               <Label className="text-xs font-bold text-foreground mb-3 block uppercase">Specify the column to be normalized:</Label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-[120px] overflow-y-auto">
-                {numericCols.map(c => (
+                {columnsInfo.map(c => (
                   <label 
                     key={c.name} 
                     className={`flex items-center gap-2 px-2 py-1.5 rounded text-sm cursor-pointer border transition-colors ${
