@@ -25,7 +25,7 @@ export function Tab2Statistics() {
     boxplotData
   } = useDataContext();
 
-  const catCols = columnsInfo.filter((c: any) => c.type === 'CHAR' && !['Diem_Chu','Xep_Loai'].includes(c.name));
+  const columnsInfo = columnsInfo.filter((c: any) => c.type === 'CHAR' && !['Diem_Chu','Xep_Loai'].includes(c.name));
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -68,7 +68,7 @@ export function Tab2Statistics() {
               <SelectValue placeholder="-- Select the Class/Group Column--" />
             </SelectTrigger>
             <SelectContent>
-              {catCols.map((c: any) => (
+              {columnsInfo.map((c: any) => (
                 <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
               ))}
             </SelectContent>
