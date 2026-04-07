@@ -398,11 +398,24 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   const handleAISummary = async () => {
-    setIsLoading(true); try {
-      const fd = new FormData(); fd.append("file", selectedFile as Blob);
+    setIsLoading(true); 
+    updateStatus('AI IS THINKING...', 'warning');
+    try {
+      const fd = new FormData(); 
+      fd.append("file", selectedFile as Blob);
       const res = await fetch(`${API_URL}/api/ai-summary`, { method: "POST", body: fd });
-      const d = await res.json(); setAiReport(d.ai_report); updateStatus('AI UPDATED.', 'success');
-    } catch (e) { toast({ title: "Error AI", description: "Error API", variant: "destructive" }); } finally { setIsLoading(false); }
+      const d = await res.json(); 
+      
+      // Tuyệt chiêu 4h sáng: "Bao lưới" mọi thể loại tên biến mà API có thể trả về!
+      const finalReport = d.ai_report || d.aiReport || d.summary || d.report || d.message || (typeof d === 'string' ? d : JSON.stringify(d));
+      
+      setAiReport(finalReport); 
+      updateStatus('AI UPDATED.', 'success');
+    } catch (e) { 
+      toast({ title: "Error AI", description: "Error API", variant: "destructive" }); 
+    } finally { 
+      setIsLoading(false); 
+    }
   };
 
   const handleAutoDashboard = async () => {
