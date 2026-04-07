@@ -25,7 +25,7 @@ export function Tab2Statistics() {
     boxplotData
   } = useDataContext();
 
-  const catCols = columnsInfo.filter((c: any) => c.type === 'CHỮ' && !['Diem_Chu','Xep_Loai'].includes(c.name));
+  const catCols = columnsInfo.filter((c: any) => c.type === 'CHAR' && !['Diem_Chu','Xep_Loai'].includes(c.name));
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -33,25 +33,25 @@ export function Tab2Statistics() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="hover:shadow-md transition-shadow border-l-4 border-l-slate-400">
           <CardContent className="pt-5">
-            <h4 className="text-xs uppercase text-muted-foreground font-semibold mb-1 tracking-wide">Mẫu Khảo Sát</h4>
+            <h4 className="text-xs uppercase text-muted-foreground font-semibold mb-1 tracking-wide">Survey Count</h4>
             <span className="text-2xl font-bold text-foreground">{kpiData.total} SV</span>
           </CardContent>
         </Card>
         <Card className="hover:shadow-md transition-shadow border-l-4 border-l-blue-500">
           <CardContent className="pt-5">
-            <h4 className="text-xs uppercase text-muted-foreground font-semibold mb-1 tracking-wide">Điểm TB (Hệ 10)</h4>
+            <h4 className="text-xs uppercase text-muted-foreground font-semibold mb-1 tracking-wide">Avarage Score (Scale 10)</h4>
             <span className="text-2xl font-bold text-primary">{kpiData.mean10}</span>
           </CardContent>
         </Card>
         <Card className="hover:shadow-md transition-shadow border-l-4 border-l-amber-500">
           <CardContent className="pt-5">
-            <h4 className="text-xs uppercase text-muted-foreground font-semibold mb-1 tracking-wide">GPA (Hệ 4.0)</h4>
+            <h4 className="text-xs uppercase text-muted-foreground font-semibold mb-1 tracking-wide">GPA (Scale 4.0)</h4>
             <span className="text-2xl font-bold text-amber-600">{kpiData.mean4}</span>
           </CardContent>
         </Card>
         <Card className="hover:shadow-md transition-shadow border-l-4 border-l-emerald-500">
           <CardContent className="pt-5">
-            <h4 className="text-xs uppercase text-muted-foreground font-semibold mb-1 tracking-wide">Tỷ Lệ Đạt (≥4.0)</h4>
+            <h4 className="text-xs uppercase text-muted-foreground font-semibold mb-1 tracking-wide">Pass Rate (≥4.0)</h4>
             <div className="flex justify-between items-end">
               <span className="text-2xl font-bold text-emerald-600">{kpiData.passRate}%</span>
             </div>
@@ -62,10 +62,10 @@ export function Tab2Statistics() {
       {/* Control Panel: Chọn cột lớp */}
       <Card className="bg-blue-50/30 border-blue-100">
         <CardContent className="py-4 flex items-center gap-4">
-          <Label className="text-sm text-blue-900 font-bold">Phân Lớp Sinh Viên Bằng Cột:</Label>
+          <Label className="text-sm text-blue-900 font-bold">Classifying Students Using Columns:</Label>
           <Select value={classCol} onValueChange={setClassCol}>
             <SelectTrigger className="w-[250px] bg-white shadow-sm">
-              <SelectValue placeholder="-- Chọn Cột Lớp/Nhóm --" />
+              <SelectValue placeholder="-- Select the Class/Group Column--" />
             </SelectTrigger>
             <SelectContent>
               {catCols.map((c: any) => (
@@ -83,14 +83,14 @@ export function Tab2Statistics() {
         {/* 1. Histogram: Luôn hiển thị */}
         <Card className="shadow-sm">
           <CardContent className="pt-5 h-[400px]">
-            <h3 className="text-sm font-bold text-foreground uppercase mb-4 text-center">Phân Phối Học Lực Toàn Khóa</h3>
+            <h3 className="text-sm font-bold text-foreground uppercase mb-4 text-center">Distribution of Academic Performance Across the Course</h3>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={statsData.hist} margin={{ top: 10, right: 10, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={THEME.gridLine} />
                 <XAxis dataKey="bin" stroke={THEME.textMuted} fontSize={11} />
                 <YAxis stroke={THEME.textMuted} fontSize={11} />
                 <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
-                <Bar dataKey="count" name="Số SV" fill={THEME.primary} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="count" name="Number of students" fill={THEME.primary} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
             <ChartGuide title="Histogram" content="Đỉnh cao nhất giúp TX xác định mặt bằng chung của sinh viên đang nằm ở thang điểm nào." />
@@ -100,7 +100,7 @@ export function Tab2Statistics() {
         {/* 2. Stacked Bar: Hiện khi có classCol */}
         <Card className="shadow-sm">
           <CardContent className="pt-5 h-[400px] flex flex-col">
-            <h3 className="text-sm font-bold text-foreground uppercase mb-4 text-center">Cơ Cấu Xếp Loại Theo {classCol || "Lớp"}</h3>
+            <h3 className="text-sm font-bold text-foreground uppercase mb-4 text-center">Ranking Structure According to {classCol || "Class"}</h3>
             {classCol ? (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={statsData.classif.slice(0, 10)} margin={{ top: 10, right: 10, bottom: 40 }}>
@@ -109,18 +109,18 @@ export function Tab2Statistics() {
                   <YAxis stroke={THEME.textMuted} fontSize={11} />
                   <Tooltip />
                   <Legend verticalAlign="top" wrapperStyle={{ fontSize: '10px', paddingBottom: '10px' }} />
-                  <Bar dataKey="Xuất sắc" stackId="a" fill="#059669" />
-                  <Bar dataKey="Giỏi" stackId="a" fill="#1d4ed8" />
-                  <Bar dataKey="Khá" stackId="a" fill="#7c3aed" />
-                  <Bar dataKey="Trung Bình" stackId="a" fill="#d97706" />
-                  <Bar dataKey="Yêu" stackId="a" fill="#e11d48" />
-                  <Bar dataKey="Kém" stackId="a" fill="#dc2626" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Excellent" stackId="a" fill="#059669" />
+                  <Bar dataKey="Very Good" stackId="a" fill="#1d4ed8" />
+                  <Bar dataKey="Good" stackId="a" fill="#7c3aed" />
+                  <Bar dataKey="Average" stackId="a" fill="#d97706" />
+                  <Bar dataKey="Weak" stackId="a" fill="#e11d48" />
+                  <Bar dataKey="Fail" stackId="a" fill="#dc2626" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-slate-400 border-2 border-dashed rounded-xl m-4">
-                <p className="text-xs uppercase font-black tracking-widest">Dữ liệu trống</p>
-                <p className="text-[10px]">Vui lòng chọn cột phân loại phía trên</p>
+                <p className="text-xs uppercase font-black tracking-widest">Empty data</p>
+                <p className="text-[10px]">Please select the classification column above.</p>
               </div>
             )}
           </CardContent>
@@ -131,7 +131,7 @@ export function Tab2Statistics() {
       {classCol && (
         <Card className="shadow-sm animate-in slide-in-from-bottom duration-500">
           <CardContent className="pt-5">
-            <h3 className="text-sm font-bold text-foreground uppercase mb-4 text-center">Độ Phân Tán Điểm Hệ 4.0 (Boxplot)</h3>
+            <h3 className="text-sm font-bold text-foreground uppercase mb-4 text-center">Boxplot (System 4.0)</h3>
             <ResponsiveContainer width="100%" height={350}>
               <ComposedChart data={boxplotData.slice(0, 15)} margin={{ top: 20, right: 20, bottom: 60, left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={THEME.gridLine} />

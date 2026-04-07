@@ -37,31 +37,31 @@ const modelDistribution = [
 ]
 
 const distributionData = [
-  { name: "Xuất sắc", value: 156 },
-  { name: "Tốt", value: 234 },
-  { name: "Trung bình", value: 312 },
-  { name: "Khá", value: 189 },
-  { name: "Yếu", value: 87 },
+  { name: "Excellent", value: 156 },
+  { name: " Very Good", value: 234 },
+  { name: "Average", value: 312 },
+  { name: "Good", value: 189 },
+  { name: "Weak", value: 87 },
 ]
 
 const tableColumns = [
-  { key: "id", label: "Mã", sortable: true },
-  { key: "timestamp", label: "Thời gian", sortable: true },
-  { key: "prediction", label: "Dự đoán", sortable: true },
-  { key: "actual", label: "Thực tế", sortable: true },
-  { key: "error", label: "Sai số (%)", sortable: true },
-  { key: "status", label: "Trạng thái", sortable: false },
+  { key: "id", label: "ID", sortable: true },
+  { key: "timestamp", label: "Time", sortable: true },
+  { key: "prediction", label: "Prediction", sortable: true },
+  { key: "actual", label: "Actual", sortable: true },
+  { key: "error", label: "Error(%)", sortable: true },
+  { key: "status", label: "Status", sortable: false },
 ]
 
 const tableData = [
-  { id: "P-001", timestamp: "07/04/2026 09:15", prediction: 87.5, actual: 89.2, error: 1.9, status: "Đã xác thực" },
-  { id: "P-002", timestamp: "07/04/2026 09:30", prediction: 92.1, actual: 91.8, error: 0.3, status: "Đã xác thực" },
-  { id: "P-003", timestamp: "07/04/2026 09:45", prediction: 78.3, actual: 80.1, error: 2.2, status: "Đã xác thực" },
-  { id: "P-004", timestamp: "07/04/2026 10:00", prediction: 95.6, actual: 94.2, error: 1.5, status: "Đã xác thực" },
-  { id: "P-005", timestamp: "07/04/2026 10:15", prediction: 83.9, actual: 85.7, error: 2.1, status: "Đã xác thực" },
-  { id: "P-006", timestamp: "07/04/2026 10:30", prediction: 88.2, actual: 87.5, error: 0.8, status: "Đã xác thực" },
-  { id: "P-007", timestamp: "07/04/2026 10:45", prediction: 91.4, actual: 92.1, error: 0.8, status: "Đã xác thực" },
-  { id: "P-008", timestamp: "07/04/2026 11:00", prediction: 76.8, actual: 78.3, error: 1.9, status: "Đã xác thực" },
+  { id: "P-001", timestamp: "07/04/2026 09:15", prediction: 87.5, actual: 89.2, error: 1.9, status: "Verified" },
+  { id: "P-002", timestamp: "07/04/2026 09:30", prediction: 92.1, actual: 91.8, error: 0.3, status: "Verified" },
+  { id: "P-003", timestamp: "07/04/2026 09:45", prediction: 78.3, actual: 80.1, error: 2.2, status: "Verified" },
+  { id: "P-004", timestamp: "07/04/2026 10:00", prediction: 95.6, actual: 94.2, error: 1.5, status: "Verified" },
+  { id: "P-005", timestamp: "07/04/2026 10:15", prediction: 83.9, actual: 85.7, error: 2.1, status: "Verified" },
+  { id: "P-006", timestamp: "07/04/2026 10:30", prediction: 88.2, actual: 87.5, error: 0.8, status: "Verified" },
+  { id: "P-007", timestamp: "07/04/2026 10:45", prediction: 91.4, actual: 92.1, error: 0.8, status: "Verified" },
+  { id: "P-008", timestamp: "07/04/2026 11:00", prediction: 76.8, actual: 78.3, error: 1.9, status: "Verified" },
 ]
 
 export function OverviewTab() {
@@ -70,17 +70,17 @@ export function OverviewTab() {
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <MetricCard
-          title="Tổng dữ liệu"
+          title="Total data"
           value="12,847"
-          subtitle="Bản ghi đã xử lý"
+          subtitle="Processed record"
           icon={Database}
           iconColor="text-primary"
           trend={{ value: 12.5, direction: "up" }}
         />
         <MetricCard
-          title="Độ chính xác"
+          title="Accuracy"
           value="94.7%"
-          subtitle="Hệ số R²: 0.947"
+          subtitle=" R²: 0.947"
           icon={Target}
           iconColor="text-accent"
           trend={{ value: 2.3, direction: "up" }}
@@ -88,15 +88,15 @@ export function OverviewTab() {
         <MetricCard
           title="RMSE"
           value="0.0312"
-          subtitle="Sai số bình phương trung bình"
+          subtitle="Mean square error"
           icon={Activity}
           iconColor="text-chart-3"
           trend={{ value: 5.1, direction: "down" }}
         />
         <MetricCard
-          title="Thời gian xử lý"
+          title="Processing time"
           value="2.34s"
-          subtitle="Trung bình mỗi lô"
+          subtitle="Average per lot"
           icon={Clock}
           iconColor="text-chart-4"
           trend={{ value: 0, direction: "neutral" }}
@@ -107,15 +107,15 @@ export function OverviewTab() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <div className="lg:col-span-2">
           <TimeSeriesChart
-            title="Phân tích chuỗi thời gian"
-            subtitle="So sánh giá trị thực tế và dự đoán"
+            title="Time series analysis"
+            subtitle="Compare actual and predicted values"
             data={timeSeriesData}
           />
         </div>
         <div className="lg:col-span-1">
           <DoughnutChart
-            title="Phân bổ mô hình"
-            subtitle="Tỷ lệ sử dụng thuật toán"
+            title="Model allocation"
+            subtitle="Algorithm usage rate"
             data={modelDistribution}
           />
         </div>
@@ -124,13 +124,13 @@ export function OverviewTab() {
       {/* Additional Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         <DistributionChart
-          title="Phân bổ điểm số"
-          subtitle="Phân loại hiệu suất theo nhóm"
+          title="Score distribution"
+          subtitle="Categorize performance by group"
           data={distributionData}
         />
         <div className="bg-card border border-border rounded-lg p-5">
           <h3 className="text-base font-semibold text-card-foreground mb-4">
-            Tóm tắt hiệu suất mô hình
+            Summary of model performance
           </h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -140,12 +140,12 @@ export function OverviewTab() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-card-foreground">Random Forest</p>
-                  <p className="text-xs text-muted-foreground">Mô hình chính</p>
+                  <p className="text-xs text-muted-foreground">Main model</p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="text-sm font-semibold text-card-foreground">94.7%</p>
-                <p className="text-xs text-accent">Tốt nhất</p>
+                <p className="text-xs text-accent">The Best</p>
               </div>
             </div>
             <div className="flex items-center justify-between">
@@ -160,7 +160,7 @@ export function OverviewTab() {
               </div>
               <div className="text-right">
                 <p className="text-sm font-semibold text-card-foreground">92.3%</p>
-                <p className="text-xs text-muted-foreground">Phụ trợ</p>
+                <p className="text-xs text-muted-foreground">Auxiliary</p>
               </div>
             </div>
             <div className="flex items-center justify-between">
@@ -170,12 +170,12 @@ export function OverviewTab() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-card-foreground">Neural Network</p>
-                  <p className="text-xs text-muted-foreground">Học sâu</p>
+                  <p className="text-xs text-muted-foreground">Deep learning</p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="text-sm font-semibold text-card-foreground">91.8%</p>
-                <p className="text-xs text-muted-foreground">Thử nghiệm</p>
+                <p className="text-xs text-muted-foreground">Experiment</p>
               </div>
             </div>
           </div>
@@ -184,8 +184,8 @@ export function OverviewTab() {
 
       {/* Data Table */}
       <DataTable
-        title="Kết quả dự đoán gần đây"
-        subtitle="Đầu ra mô hình và trạng thái xác thực"
+        title="Recent prediction results"
+        subtitle="Model output and validation status"
         columns={tableColumns}
         data={tableData}
         pageSize={5}

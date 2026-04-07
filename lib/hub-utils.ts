@@ -4,7 +4,7 @@
 
 export type ColumnInfo = {
   name: string;
-  type: 'SỐ' | 'CHỮ';
+  type: 'number' | 'CHAR';
   nan_count: number;
 };
 
@@ -81,19 +81,19 @@ export const THEME = {
 export const convertToHUBScale = (score10: number | string) => {
   const s = parseFloat(String(score10));
   if (isNaN(s)) return { letter: 'N/A', grade4: 0.0, group: 'N/A' };
-  if (s >= 9.5) return { letter: 'A+', grade4: 4.0, group: 'Xuất sắc' };
-  if (s >= 9.0) return { letter: 'A',  grade4: 3.7, group: 'Xuất sắc' };
-  if (s >= 8.5) return { letter: 'A-', grade4: 3.4, group: 'Giỏi' };
-  if (s >= 8.0) return { letter: 'B+', grade4: 3.2, group: 'Giỏi' };
-  if (s >= 7.5) return { letter: 'B',  grade4: 3.0, group: 'Khá' };
-  if (s >= 7.0) return { letter: 'B-', grade4: 2.8, group: 'Khá' };
-  if (s >= 6.5) return { letter: 'C+', grade4: 2.6, group: 'Khá' };
-  if (s >= 6.0) return { letter: 'C',  grade4: 2.4, group: 'Trung Bình' };
-  if (s >= 5.5) return { letter: 'C-', grade4: 2.2, group: 'Trung Bình' };
-  if (s >= 5.0) return { letter: 'D+', grade4: 2.0, group: 'Trung Bình' };
-  if (s >= 4.5) return { letter: 'D',  grade4: 1.8, group: 'Yếu' };
-  if (s >= 4.0) return { letter: 'D-', grade4: 1.6, group: 'Yếu' };
-  return { letter: 'F', grade4: 0.0, group: 'Kém' }; 
+  if (s >= 9.5) return { letter: 'A+', grade4: 4.0, group: 'Excellent' };
+  if (s >= 9.0) return { letter: 'A',  grade4: 3.7, group: 'Excellent' };
+  if (s >= 8.5) return { letter: 'A-', grade4: 3.4, group: 'Very Good' };
+  if (s >= 8.0) return { letter: 'B+', grade4: 3.2, group: 'Very Good' };
+  if (s >= 7.5) return { letter: 'B',  grade4: 3.0, group: 'Good' };
+  if (s >= 7.0) return { letter: 'B-', grade4: 2.8, group: 'Good' };
+  if (s >= 6.5) return { letter: 'C+', grade4: 2.6, group: 'Good' };
+  if (s >= 6.0) return { letter: 'C',  grade4: 2.4, group: 'Average' };
+  if (s >= 5.5) return { letter: 'C-', grade4: 2.2, group: 'Average' };
+  if (s >= 5.0) return { letter: 'D+', grade4: 2.0, group: 'Average' };
+  if (s >= 4.5) return { letter: 'D',  grade4: 1.8, group: 'Weak' };
+  if (s >= 4.0) return { letter: 'D-', grade4: 1.6, group: 'Weak' };
+  return { letter: 'F', grade4: 0.0, group: 'Fail' }; 
 };
 
 export const formatXAxis = (tickItem: string | number) => {

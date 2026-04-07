@@ -18,7 +18,7 @@ export function TopNav({ loadingStatus, isLoading, statusType }: TopNavProps) {
             Data Science Faculty Portal
           </h2>
           <p className="text-xs text-muted-foreground">
-            Hệ thống phân tích khảo thí & Hỗ trợ quyết định
+            Test Analysis & Decision Support System
           </p>
         </div>
       </div>

@@ -50,7 +50,7 @@ export function Tab3AI() {
                 className="h-16 bg-white border-2 border-amber-200 text-amber-700 hover:bg-amber-50 shadow-sm transition-all active:scale-95 font-bold"
               >
                 <Trash2 className="h-5 w-5 mr-3" />
-                LÀM SẠCH DATA TỰ ĐỘNG
+                AUTOMATIC DATA CLEANING
               </Button>
               <Button 
                 onClick={handleAISummary} 
@@ -58,7 +58,7 @@ export function Tab3AI() {
                 className="h-16 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200 font-bold transition-all active:scale-95"
               >
                 <Bot className="h-5 w-5 mr-3" />
-                AI ĐÁNH GIÁ DATASET
+                AI DATASET EVALUATION
               </Button>
               <Button 
                 onClick={handleAutoDashboard} 
@@ -66,7 +66,7 @@ export function Tab3AI() {
                 className="h-16 bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-200 font-bold transition-all active:scale-95"
               >
                 <Zap className="h-5 w-5 mr-3" />
-                TẠO DASHBOARD TỰ ĐỘNG
+                AUTOMATIC DASHBOARD CREATION
               </Button>
               <Button 
                 onClick={handleExportExcel} 
@@ -74,7 +74,7 @@ export function Tab3AI() {
                 className="h-16 bg-white border-2 border-red-100 text-red-600 hover:bg-red-50 shadow-sm font-bold transition-all active:scale-95"
               >
                 <Download className="h-5 w-5 mr-3" />
-                XUẤT BÁO CÁO EXCEL
+                EXPORT REPORT IN EXCEL
               </Button>
             </div>
           </div>
@@ -122,7 +122,7 @@ export function Tab3AI() {
                   <div className="h-64 bg-slate-50/50 rounded-2xl border border-slate-100 p-4">
                     {(!autoDashboardDatasets[idx] || !config.x || !config.y) ? ( 
                       <div className="w-full h-full flex items-center justify-center text-red-400 text-[10px] font-bold uppercase italic">
-                        Dữ liệu không tương thích
+                        Incompatible data
                       </div>
                     ) : (
                       <ResponsiveContainer width="100%" height="100%">

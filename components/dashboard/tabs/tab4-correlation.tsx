@@ -29,7 +29,7 @@ export function Tab4Correlation() {
     personalRadar
   } = useDataContext();
 
-  const idCol = columnsInfo.find((c: any) => c.type === 'CHỮ' && !['Diem_Chu','Xep_Loai'].includes(c.name))?.name
+  const idCol = columnsInfo.find((c: any) => c.type === 'CHAR' && !['Diem_Chu','Xep_Loai'].includes(c.name))?.name
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -37,14 +37,14 @@ export function Tab4Correlation() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-lg font-bold text-primary uppercase tracking-wide">
-            Tương Quan Đa Biến (Heatmap)
+            Multivariable Correlation (Heatmap)
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="shadow-sm h-[400px] flex flex-col">
               <CardContent className="pt-5 flex-1 flex flex-col">
-                <h3 className="text-sm font-bold text-foreground mb-4 text-center underline underline-offset-4 decoration-primary/30">Ma Trận Tương Quan (Pearson)</h3>
+                <h3 className="text-sm font-bold text-foreground mb-4 text-center underline underline-offset-4 decoration-primary/30">Correlation Matrix (Pearson)</h3>
                 <div className="flex-1 overflow-auto border rounded custom-scrollbar bg-muted/5">
                   {corrMatrix && Object.keys(corrMatrix).length > 0 ? (
                     <table className="w-full text-[10px] text-center border-collapse">
@@ -78,7 +78,7 @@ export function Tab4Correlation() {
                       </tbody>
                     </table>
                   ) : (
-                    <div className="flex h-full items-center justify-center text-muted-foreground italic">Dữ liệu chưa sẵn sàng...</div>
+                    <div className="flex h-full items-center justify-center text-muted-foreground italic">The data is not ready yet...</div>
                   )}
                 </div>
               </CardContent>
@@ -88,7 +88,7 @@ export function Tab4Correlation() {
             <Card className="shadow-sm h-[400px] flex flex-col">
               <CardContent className="pt-5 flex-1 flex flex-col">
                 <h3 className="text-sm font-bold text-foreground mb-4 text-center tracking-tight">
-                  PHÂN BỐ & TRENDLINE (KẾT NỐI TỪ TAB 5)
+                  DISTRIBUTION & TRENDLINE
                 </h3>
                 <div className="flex-1">
                   {xAxis && yAxis && scatterWithTrend.data && scatterWithTrend.data.length > 0 ? (
@@ -122,7 +122,7 @@ export function Tab4Correlation() {
   />
   
   <Scatter 
-    name="Sinh viên" 
+    name="student" 
     data={scatterWithTrend.data}
     fill="#3b82f6" 
     opacity={0.6} 
@@ -130,7 +130,7 @@ export function Tab4Correlation() {
 
   {scatterWithTrend.trend && scatterWithTrend.trend.length > 0 && (
     <Line 
-      name="Đường xu hướng"
+      name="Trendline"
       data={scatterWithTrend.trend} 
       type="monotone" 
       dataKey={yAxis} 
@@ -146,8 +146,8 @@ export function Tab4Correlation() {
                     </ResponsiveContainer>
                   ) : (
                     <div className="flex h-full flex-col items-center justify-center text-muted-foreground text-[11px] text-center px-6 bg-muted/20 border border-dashed rounded-lg">
-                      <p className="font-bold mb-2 italic text-primary">Hệ thống chưa nhận diện được cặp biến (X, Y)</p>
-                      <p>Vui lòng qua <span className="font-black text-blue-600 underline">Tab 5</span>, chọn Trục X & Trục Y rồi nhấn <span className="font-black text-emerald-600 underline">THỰC THI PIPELINE</span>.</p>
+                      <p className="font-bold mb-2 italic text-primary">The system has not yet identified the pair of variables (X, Y).</p>
+                      <p>Please pass <span className="font-black text-blue-600 underline">Tab 5</span>, select the X-axis and Y-axis, then press <span className="font-black text-emerald-600 underline">Execute Pipeline</span>.</p>
                     </div>
                   )}
                 </div>
@@ -161,20 +161,20 @@ export function Tab4Correlation() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-lg font-bold text-primary uppercase tracking-wide">
-            Đối Chiếu Năng Lực Cá Nhân (Radar)
+            Personal Competency Assessment (Radar)
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
             <div className="lg:col-span-2 bg-muted/30 p-5 rounded-lg border">
-              <Label className="text-xs font-bold text-foreground mb-2 block uppercase tracking-tighter">Truy Vấn Theo Sinh Viên / ID</Label>
+              <Label className="text-xs font-bold text-foreground mb-2 block uppercase tracking-tighter">Query by Student / ID</Label>
               <Select value={String(selectedStudentIdx)} onValueChange={(v) => setSelectedStudentIdx(parseInt(v))}>
                 <SelectTrigger className="mb-6 bg-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {fullData.map((row: any, idx: number) => {
-                    const label = idCol ? `${row[idCol]}` : `Dòng số ${idx + 1}`
+                    const label = idCol ? `${row[idCol]}` : `Line number ${idx + 1}`
                     return <SelectItem key={idx} value={String(idx)}>{label}</SelectItem>
                   })}
                 </SelectContent>
@@ -185,16 +185,16 @@ export function Tab4Correlation() {
                   <div className="text-[10px] text-muted-foreground uppercase font-black mb-1">GPA Hệ 4.0</div>
                   <div className="text-4xl font-black text-primary">{fullData[selectedStudentIdx]?.TBM_He4 || '0.00'}</div>
                   <div className="mt-2 inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest">
-                    {fullData[selectedStudentIdx]?.Xep_Loai || 'Chưa xếp loại'}
+                    {fullData[selectedStudentIdx]?.Xep_Loai || 'Not yet rated'}
                   </div>
                 </CardContent>
               </Card>
               
               {personalRadar.warning && (
                 <div className={`p-4 rounded-lg text-xs font-bold border leading-tight shadow-sm ${
-                  personalRadar.warning.includes('BÁO ĐỘNG') 
+                  personalRadar.warning.includes('Warning') 
                     ? 'bg-red-50 text-red-700 border-red-200 animate-pulse' 
-                    : personalRadar.warning.includes('ĐẠT') 
+                    : personalRadar.warning.includes('Pass') 
                       ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
                       : 'bg-amber-50 text-amber-700 border-amber-200'
                 }`}>
@@ -211,8 +211,8 @@ export function Tab4Correlation() {
                     <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 9, fontWeight: 'bold' }} tickFormatter={formatXAxis} />
                     <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '11px' }} />
                     <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: '11px', paddingTop: '20px' }}/>
-                    <Radar name="Cá Nhân" dataKey="studentScore" stroke="#059669" strokeWidth={3} fill="#059669" fillOpacity={0.6} />
-                    <Radar name="Mặt Bằng Lớp" dataKey="classAvg" stroke="#d97706" strokeWidth={2} fill="#d97706" fillOpacity={0.2} strokeDasharray="4 4" />
+                    <Radar name="Personal" dataKey="studentScore" stroke="#059669" strokeWidth={3} fill="#059669" fillOpacity={0.6} />
+                    <Radar name="General Level of the Class" dataKey="classAvg" stroke="#d97706" strokeWidth={2} fill="#d97706" fillOpacity={0.2} strokeDasharray="4 4" />
                   </RadarChart>
                 </ResponsiveContainer>
               </CardContent>

@@ -51,7 +51,7 @@ export function DashboardContent() {
           
           <footer className="mt-8 py-4 border-t border-border text-center">
             <p className="text-xs text-muted-foreground">
-              Data Science Faculty &copy; 2026 — Hệ Thống Phân Tích Khảo Thí HUB - Truc Xinh
+              Data Science Faculty &copy; 2026 — HUB Test Analysis System - Truc Xinh
             </p>
           </footer>
         </main>

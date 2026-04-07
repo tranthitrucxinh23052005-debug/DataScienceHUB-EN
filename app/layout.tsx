@@ -11,7 +11,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'DS Portal - Faculty of Data Science HUB',
-  description: 'Hệ thống phân tích dữ liệu khảo thí - Dự án nghiên cứu khoa học HUB',
+  description: 'Academic Analytics & Decision Support System - HUB Scientific Research Project',
   generator: 'v0.app',
   icons: {
     // TX chỉ cần trỏ thẳng vào file ảnh đã bỏ trong thư mục public

@@ -28,19 +28,19 @@ export const COLORS = ['#1d4ed8', '#059669', '#d97706', '#7c3aed', '#db2777', '#
 export const convertToHUBScale = (score10: any) => {
   const s = parseFloat(score10);
   if (isNaN(s)) return { letter: 'N/A', grade4: 0.0, group: 'N/A' };
-  if (s >= 9.5) return { letter: 'A+', grade4: 4.0, group: 'Xuất sắc' };
-  if (s >= 9.0) return { letter: 'A',  grade4: 3.7, group: 'Xuất sắc' };
-  if (s >= 8.5) return { letter: 'A-', grade4: 3.4, group: 'Giỏi' };
-  if (s >= 8.0) return { letter: 'B+', grade4: 3.2, group: 'Giỏi' };
-  if (s >= 7.5) return { letter: 'B',  grade4: 3.0, group: 'Khá' };
-  if (s >= 7.0) return { letter: 'B-', grade4: 2.8, group: 'Khá' };
-  if (s >= 6.5) return { letter: 'C+', grade4: 2.6, group: 'Khá' };
-  if (s >= 6.0) return { letter: 'C',  grade4: 2.4, group: 'Trung Bình' };
-  if (s >= 5.5) return { letter: 'C-', grade4: 2.2, group: 'Trung Bình' };
-  if (s >= 5.0) return { letter: 'D+', grade4: 2.0, group: 'Trung Bình' };
-  if (s >= 4.5) return { letter: 'D',  grade4: 1.8, group: 'Yếu' };
-  if (s >= 4.0) return { letter: 'D-', grade4: 1.6, group: 'Yếu' };
-  return { letter: 'F', grade4: 0.0, group: 'Kém' }; 
+  if (s >= 9.5) return { letter: 'A+', grade4: 4.0, group: 'Excellent' };
+  if (s >= 9.0) return { letter: 'A',  grade4: 3.7, group: 'Excellent' };
+  if (s >= 8.5) return { letter: 'A-', grade4: 3.4, group: 'Very Good' };
+  if (s >= 8.0) return { letter: 'B+', grade4: 3.2, group: 'Very Good' };
+  if (s >= 7.5) return { letter: 'B',  grade4: 3.0, group: 'Good' };
+  if (s >= 7.0) return { letter: 'B-', grade4: 2.8, group: 'Good' };
+  if (s >= 6.5) return { letter: 'C+', grade4: 2.6, group: 'Good' };
+  if (s >= 6.0) return { letter: 'C',  grade4: 2.4, group: 'Average' };
+  if (s >= 5.5) return { letter: 'C-', grade4: 2.2, group: 'Average' };
+  if (s >= 5.0) return { letter: 'D+', grade4: 2.0, group: 'Average' };
+  if (s >= 4.5) return { letter: 'D',  grade4: 1.8, group: 'Weak' };
+  if (s >= 4.0) return { letter: 'D-', grade4: 1.6, group: 'Weak' };
+  return { letter: 'F', grade4: 0.0, group: 'Fail' }; 
 };
 
 export const formatXAxis = (tickItem: any) => {
@@ -93,7 +93,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewData, setPreviewData] = useState<any[]>([]);
   const [fullData, setFullData] = useState<any[]>([]); 
-  const [loadingStatus, setLoadingStatus] = useState('HỆ THỐNG SẴN SÀNG CHỜ DỮ LIỆU.');
+  const [loadingStatus, setLoadingStatus] = useState('THE SYSTEM IS READY TO RECEIVE DATA.');
   const [isLoading, setIsLoading] = useState(false); 
   const [statusType, setStatusType] = useState('success'); 
   const [stepDataChecked, setStepDataChecked] = useState(false);
@@ -139,7 +139,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     let newData: any[] = [];
     if (useHUBFormula) {
       const { cc, btn, btcn, thi } = hubCols;
-      if (!cc || !btn || !btcn || !thi) return toast({ title: "Thiếu thông tin", description: "Vui lòng chọn đủ 4 cột.", variant: "destructive" });
+      if (!cc || !btn || !btcn || !thi) return toast({ title: "Lack of information", description: "Please select all 4 columns..", variant: "destructive" });
       newData = fullData.map(row => {
         const s_cc = parseFloat(row[cc]) || 0; const s_btn = parseFloat(row[btn]) || 0;
         const s_btcn = parseFloat(row[btcn]) || 0; const s_thi = parseFloat(row[thi]) || 0;
@@ -149,7 +149,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       });
       setMainScoreCol('TBM_He10'); 
     } else {
-      if (!mainScoreCol) return toast({ title: "Thiếu thông tin", description: "Vui lòng chọn cột hệ 10.", variant: "destructive" });
+      if (!mainScoreCol) return toast({ title: "Lack of information", description: "Please select the column in base 10..", variant: "destructive" });
       newData = fullData.map(row => {
         const total10 = parseFloat(row[mainScoreCol]);
         const hubConv = !isNaN(total10) ? convertToHUBScale(total10) : { letter: 'N/A', grade4: 0, group: 'N/A' };
@@ -157,7 +157,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       });
     }
     setFullData(newData);
-    updateStatus('TÍNH TOÁN HUB THÀNH CÔNG!', 'success');
+    updateStatus('Hub calculation successful!!', 'success');
   };
 
   const kpiData = useMemo(() => {
@@ -195,7 +195,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const group = row['Xep_Loai'];
 
     if (!classMap[cls]) {
-      classMap[cls] = { name: cls, count: 0, 'Xuất sắc': 0, 'Giỏi': 0, 'Khá': 0, 'Trung Bình': 0, 'Yếu': 0, 'Kém': 0 };
+      classMap[cls] = { name: cls, count: 0, 'Excellent': 0, 'Very Good': 0, 'Good': 0, 'Average': 0, 'Weak': 0, 'Fail': 0 };
     }
 
     classMap[cls].count++;
@@ -226,10 +226,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const personalRadar = useMemo(() => {
     if (!fullData.length || selectedStudentIdx >= fullData.length) return { data: [], warning: "", info: null };
-    const numCols = columnsInfo.filter(c => c.type === 'SỐ' && !['TBM_He10','TBM_He4'].includes(c.name)).map(c => c.name).slice(0, 6);
+    const numCols = columnsInfo.filter(c => c.type === 'number' && !['TBM_He10','TBM_He4'].includes(c.name)).map(c => c.name).slice(0, 6);
     const student = fullData[selectedStudentIdx];
     const data = numCols.map(col => ({ subject: col, studentScore: convertToHUBScale(student[col]).grade4, classAvg: convertToHUBScale(fullData.reduce((a, b) => a + (parseFloat(b[col]) || 0), 0) / fullData.length).grade4 }));
-    return { data, warning: "✅ DỮ LIỆU ĐÃ SẴN SÀNG", info: student };
+    return { data, warning: "✅ DATA IS READY", info: student };
   }, [fullData, selectedStudentIdx, columnsInfo]);
 
   const scatterWithTrend = useMemo(() => {
@@ -428,7 +428,7 @@ const renderTable = (rows: string[][], key: string) => (
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setSelectedFile(file); updateStatus('ĐANG PHÂN TÍCH...', 'warning');
+      setSelectedFile(file); updateStatus('ANALYZING...', 'warning');
       const reader = new FileReader();
       reader.onload = (evt) => {
         const rows = (evt.target?.result as string).split('\n').filter(r => r.trim());
@@ -440,29 +440,29 @@ const renderTable = (rows: string[][], key: string) => (
           headers.forEach((h, i) => { obj[h] = !isNaN(parseFloat(vals[i])) && vals[i] !== '' ? parseFloat(vals[i]) : vals[i]?.trim(); });
           return obj;
         });
-        setFullData(parsed); setPreviewData(parsed.slice(0, 5)); updateStatus('TẢI LÊN THÀNH CÔNG.', 'success');
+        setFullData(parsed); setPreviewData(parsed.slice(0, 5)); updateStatus('Upload successful.', 'success');
       };
       reader.readAsText(file);
     }
   };
 
   const runCheckData = async () => {
-    setIsLoading(true); updateStatus('QUÉT METADATA...', 'warning');
+    setIsLoading(true); updateStatus('SCAN DATA...', 'warning');
     const fd = new FormData(); fd.append('file', selectedFile as Blob);
     try {
       const res = await fetch(`${API_URL}/api/upload`, { method: 'POST', body: fd });
       const result = await res.json();
       if (result.status === 'success') {
         setColumnsInfo(result.columns_info); setMissingData(result.missing_stats); setTotalRows(result.total_rows);
-        const cats = result.columns_info.filter((c: any) => c.type === 'CHỮ').map((c: any) => c.name);
+        const cats = result.columns_info.filter((c: any) => c.type === 'CHAR').map((c: any) => c.name);
         if (cats.length) setClassCol(cats[0]);
-        setStepDataChecked(true); updateStatus('QUÉT XONG.', 'success');
-      } else toast({ title: "Lỗi", description: result.message, variant: "destructive" });
-    } catch (e: any) { toast({ title: "Lỗi", description: e.message, variant: "destructive" }); } finally { setIsLoading(false); }
+        setStepDataChecked(true); updateStatus('SCAN FINISH.', 'success');
+      } else toast({ title: "Error", description: result.message, variant: "destructive" });
+    } catch (e: any) { toast({ title: "Error", description: e.message, variant: "destructive" }); } finally { setIsLoading(false); }
   };
 
   const runProcessData = async () => {
-    setIsLoading(true); updateStatus('ĐANG XỬ LÝ...', 'warning');
+    setIsLoading(true); updateStatus('PROCESSING...', 'warning');
     const fd = new FormData(); fd.append('file', selectedFile as Blob);
     fd.append('mode', processMode); fd.append('scale_type', scaleType); fd.append('scale_cols', selectedScaleCols.join(','));
     fd.append('group_by', xAxis); fd.append('agg_col', yAxis); fd.append('agg_func', aggFunc);
@@ -470,7 +470,7 @@ const renderTable = (rows: string[][], key: string) => (
       const res = await fetch(`${API_URL}/api/process-data`, { method: 'POST', body: fd });
       const r = await res.json();
       if (r.status === 'success') { setBiData(r.data); setCorrMatrix(r.correlation); setStepProcessed(true); if(activeTab === 1) setActiveTab(5); updateStatus('XỬ LÝ XONG.', 'success'); }
-    } catch (e) { toast({ title: "Lỗi", description: "Lỗi kết nối API", variant: "destructive" }); } finally { setIsLoading(false); }
+    } catch (e) { toast({ title: "Error", description: "Error connecting API", variant: "destructive" }); } finally { setIsLoading(false); }
   };
 
   const handleCleanData = async () => {
@@ -479,24 +479,24 @@ const renderTable = (rows: string[][], key: string) => (
       const res = await fetch(`${API_URL}/api/clean-data`, { method: "POST", body: fd });
       const blob = await res.blob(); const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a"); a.href = url; a.download = "Data_Sach.csv"; a.click();
-      updateStatus('ĐÃ TẢI DATA SẠCH.', 'success');
-    } catch (e) { toast({ title: "Lỗi", description: "Lỗi làm sạch", variant: "destructive" }); } finally { setIsLoading(false); }
+      updateStatus('CLEAN DATA HAS BEEN DOWNLOADED.', 'success');
+    } catch (e) { toast({ title: "Error", description: "Cleaning error", variant: "destructive" }); } finally { setIsLoading(false); }
   };
 
   const handleAISummary = async () => {
     setIsLoading(true); try {
       const fd = new FormData(); fd.append("file", selectedFile as Blob);
       const res = await fetch(`${API_URL}/api/ai-summary`, { method: "POST", body: fd });
-      const d = await res.json(); setAiReport(d.ai_report); updateStatus('AI ĐÃ CẬP NHẬT.', 'success');
-    } catch (e) { toast({ title: "Lỗi AI", description: "Lỗi API", variant: "destructive" }); } finally { setIsLoading(false); }
+      const d = await res.json(); setAiReport(d.ai_report); updateStatus('AI UPDATED.', 'success');
+    } catch (e) { toast({ title: "Error AI", description: "Error API", variant: "destructive" }); } finally { setIsLoading(false); }
   };
 
   const handleAutoDashboard = async () => {
     setIsLoading(true); try {
       const fd = new FormData(); fd.append("file", selectedFile as Blob);
       const res = await fetch(`${API_URL}/api/suggest-dashboard`, { method: "POST", body: fd });
-      const d = await res.json(); setAutoConfigs(d.suggestions); updateStatus('DASHBOARD ĐÃ TẠO.', 'success');
-    } catch (e) { toast({ title: "Lỗi", description: "Lỗi API", variant: "destructive" }); } finally { setIsLoading(false); }
+      const d = await res.json(); setAutoConfigs(d.suggestions); updateStatus('DASHBOARD CREATED.', 'success');
+    } catch (e) { toast({ title: "Error", description: "Error API", variant: "destructive" }); } finally { setIsLoading(false); }
   };
 
   const handleExportExcel = async () => {
@@ -505,21 +505,21 @@ const renderTable = (rows: string[][], key: string) => (
       const res = await fetch(`${API_URL}/api/export-excel`, { method: "POST", body: fd });
       const blob = await res.blob(); const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a"); a.href = url; a.download = "Bao_Cao.xlsx"; a.click();
-      updateStatus('XUẤT EXCEL XONG.', 'success');
-    } catch (e) { toast({ title: "Lỗi", description: "Lỗi API", variant: "destructive" }); } finally { setIsLoading(false); }
+      updateStatus('EXPORTED TO EXCEL.', 'success');
+    } catch (e) { toast({ title: "Error", description: "Error API", variant: "destructive" }); } finally { setIsLoading(false); }
   };
 
 const handleChartInsight = async () => {
   if (!chartRef.current) {
     return toast({ 
-      title: "Lỗi", 
+      title: "Error", 
       description: "Biểu đồ trống, không thể phân tích.", 
       variant: "destructive" 
     });
   }
 
   setIsLoading(true);
-  updateStatus('AI ĐANG TRUY VẤN THỊ GIÁC...', 'warning');
+  updateStatus('AI IS QUESTING VISUAL PERCEPTION...', 'warning');
 
   try {
     // 1. Import động thư viện
@@ -569,7 +569,7 @@ const handleChartInsight = async () => {
 
     // 3. Chuyển canvas thành Blob để gửi lên API
     const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
-    if (!blob) throw new Error("Không thể tạo dữ liệu ảnh từ biểu đồ.");
+    if (!blob) throw new Error("Unable to generate image data from the chart.");
 
     const fd = new FormData();
     fd.append("file", blob, "chart_analysis.png");
@@ -584,17 +584,17 @@ const handleChartInsight = async () => {
 
     if (d.status === "success" || d.insight) {
       setChartInsight(d.insight);
-      updateStatus('AI ĐÃ PHÂN TÍCH XONG.', 'success');
+      updateStatus('AI has finished its analysis.', 'success');
     } else {
-      updateStatus(d.message || 'AI TỪ CHỐI PHÂN TÍCH', 'error');
+      updateStatus(d.message || 'AI REFUSES TO ANALYZE', 'error');
     }
 
   } catch (error) {
-    console.error("Lỗi Render Ảnh cho AI:", error);
-    updateStatus('LỖI TRUY VẤN THỊ GIÁC', 'error');
+    console.error("Image Rendering Error for AI:", error);
+    updateStatus('VISUAL QUERY ERROR', 'error');
     toast({
-      title: "Lỗi Hệ Thống",
-      description: "Không thể gửi dữ liệu biểu đồ cho AI. TX thử kiểm tra kết nối nhé!",
+      title: "System Error",
+      description: "Unable to send chart data to AI. Please check your connection!",
       variant: "destructive"
     });
   } finally {
@@ -603,33 +603,33 @@ const handleChartInsight = async () => {
 };
 
   const runKMeans = async () => {
-    if (kmeansCols.length < 2) return toast({ title: "Lỗi", description: "Cần 2 biến.", variant: "destructive" });
+    if (kmeansCols.length < 2) return toast({ title: "Error", description: "Two variables are needed..", variant: "destructive" });
     setIsLoading(true); const fd = new FormData(); fd.append('file', selectedFile as Blob); 
     fd.append('scale_type', scaleType); fd.append('scale_cols', selectedScaleCols.join(',')); fd.append('kmeans_cols', kmeansCols.join(','));
     try {
       const res = await fetch(`${API_URL}/api/kmeans-pipeline?k=${kClusters}`, { method: 'POST', body: fd });
       const r = await res.json(); setKmeansData({ features: r.features, centers: r.centers, scatter: r.scatter_data }); setStepClustered(true); updateStatus('PHÂN CỤM XONG.', 'success');
-    } catch (e) { toast({ title: "Lỗi", description: "Lỗi API", variant: "destructive" }); } finally { setIsLoading(false); }
+    } catch (e) { toast({ title: "Error", description: "Error API", variant: "destructive" }); } finally { setIsLoading(false); }
   };
 
   const runTrainModel = async () => {
-    if (!targetCol || !featureCols.length) return toast({ title: "Lỗi", description: "Thiếu X/Y.", variant: "destructive" });
+    if (!targetCol || !featureCols.length) return toast({ title: "Error", description: "Missing X/Y.", variant: "destructive" });
     setIsLoading(true); const fd = new FormData(); fd.append('file', selectedFile as Blob);
     fd.append('target_col', targetCol); fd.append('feature_cols', featureCols.join(',')); fd.append('model_type', modelType);
     try {
       const res = await fetch(`${API_URL}/api/predict`, { method: 'POST', body: fd });
-      const r = await res.json(); setModelMetrics(r.metrics); updateStatus('HUẤN LUYỆN XONG.', 'success');
-    } catch (e) { toast({ title: "Lỗi", description: "Lỗi API", variant: "destructive" }); } finally { setIsLoading(false); }
+      const r = await res.json(); setModelMetrics(r.metrics); updateStatus('TRAINING COMPLETED.', 'success');
+    } catch (e) { toast({ title: "Error", description: "Error API", variant: "destructive" }); } finally { setIsLoading(false); }
   };
 
   const runARIMA = async () => {
-    if (!arimaDateCol || !arimaTargetCol) return toast({ title: "Lỗi", description: "Thiếu tham số.", variant: "destructive" });
+    if (!arimaDateCol || !arimaTargetCol) return toast({ title: "Error", description: "Missing parameters.", variant: "destructive" });
     setIsLoading(true); const fd = new FormData(); fd.append('file', selectedFile as Blob);
     fd.append('date_col', arimaDateCol); fd.append('target_col', arimaTargetCol); fd.append('steps', arimaSteps.toString());
     try {
       const res = await fetch(`${API_URL}/api/forecast-arima`, { method: 'POST', body: fd });
-      const r = await res.json(); setArimaData([...r.historical, ...r.predictions]); updateStatus('DỰ BÁO XONG.', 'success');
-    } catch (e) { toast({ title: "Lỗi", description: "Lỗi API", variant: "destructive" }); } finally { setIsLoading(false); }
+      const r = await res.json(); setArimaData([...r.historical, ...r.predictions]); updateStatus('FORECAST COMPLETED.', 'success');
+    } catch (e) { toast({ title: "Error", description: "Error API", variant: "destructive" }); } finally { setIsLoading(false); }
   };
 
   const exportFilteredExcel = () => {
@@ -640,7 +640,7 @@ const handleChartInsight = async () => {
 
   const exportPDF = async () => {
     if (typeof window === 'undefined') return;
-    updateStatus('ĐANG TẠO BẢN IN...', 'warning');
+    updateStatus('Creating a print copy...', 'warning');
     const element = reportRef.current;
     if (!element) return;
 
@@ -660,7 +660,7 @@ const handleChartInsight = async () => {
         skipFonts: false,
       });
 
-      updateStatus('ĐANG ĐÓNG GÓI PDF...', 'warning');
+      updateStatus('PACKAGING PDF...', 'warning');
       
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth(); 
@@ -673,12 +673,12 @@ const handleChartInsight = async () => {
       const pdfHeight = (img.height * pdfWidth) / img.width;
       
       pdf.addImage(dataUrl, 'JPEG', 0, 0, pdfWidth, pdfHeight); 
-      pdf.save('Bao_Cao_HUB_TX_ThanhCong.pdf');
+      pdf.save('Bao_Cao_HUB_ThanhCong.pdf');
       
       updateStatus('ĐÃ XUẤT PDF THÀNH CÔNG 🎉', 'success');
     } catch (error) {
-      console.error("Lỗi xuất PDF:", error);
-      updateStatus('LỖI RENDER', 'error');
+      console.error("Error export PDF:", error);
+      updateStatus('Error RENDER', 'error');
       // Lỡ có lỗi thì vẫn phải dọn dẹp sạch sẽ
       const cleanup = document.querySelectorAll('[data-tx-id]');
       cleanup.forEach(el => el.removeAttribute('data-tx-id'));

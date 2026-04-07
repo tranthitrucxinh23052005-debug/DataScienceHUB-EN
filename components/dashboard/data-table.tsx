@@ -125,7 +125,7 @@ export function DataTable({
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Tìm kiếm..."
+                placeholder="Finding..."
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value)
@@ -141,7 +141,7 @@ export function DataTable({
               onClick={() => setSearchTerm("")}
             >
               <Filter className="h-4 w-4 mr-1.5" />
-              Lọc
+              Filter
             </Button>
             <Button 
               variant="outline" 
@@ -150,7 +150,7 @@ export function DataTable({
               onClick={handleExport}
             >
               <Download className="h-4 w-4 mr-1.5" />
-              Xuất
+              Export
             </Button>
           </div>
         </div>
@@ -185,7 +185,7 @@ export function DataTable({
                     colSpan={columns.length} 
                     className="h-24 text-center text-muted-foreground"
                   >
-                    Không tìm thấy kết quả.
+                    No results found.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -208,8 +208,8 @@ export function DataTable({
 
         <div className="flex items-center justify-between mt-4">
           <p className="text-sm text-muted-foreground">
-            Hiển thị {startIndex + 1} đến {Math.min(startIndex + pageSize, filteredData.length)} trong tổng số{" "}
-            {filteredData.length} bản ghi
+            Show {startIndex + 1} to {Math.min(startIndex + pageSize, filteredData.length)} in total {" "}
+            {filteredData.length} records
           </p>
           <div className="flex items-center gap-1">
             <Button

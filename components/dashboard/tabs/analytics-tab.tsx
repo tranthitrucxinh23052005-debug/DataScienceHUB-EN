@@ -102,26 +102,26 @@ export function AnalyticsTab() {
                 {model.status === "active" && (
                   <span className="flex items-center gap-1 text-xs text-accent">
                     <CheckCircle2 className="h-3 w-3" />
-                    Hoạt động
+                    Active
                   </span>
                 )}
                 {model.status === "training" && (
                   <span className="flex items-center gap-1 text-xs text-chart-3">
                     <AlertCircle className="h-3 w-3" />
-                    Đang huấn luyện
+                    Training...
                   </span>
                 )}
                 {model.status === "inactive" && (
                   <span className="flex items-center gap-1 text-xs text-muted-foreground">
                     <XCircle className="h-3 w-3" />
-                    Không hoạt động
+                    Inactive
                   </span>
                 )}
               </div>
               <h3 className="font-semibold text-foreground">{model.name}</h3>
               <p className="text-xs text-muted-foreground mb-3">{model.description}</p>
               <div className="text-2xl font-bold text-primary">{model.accuracy}%</div>
-              <p className="text-xs text-muted-foreground">Độ chính xác</p>
+              <p className="text-xs text-muted-foreground">Accuracy</p>
             </CardContent>
           </Card>
         ))}
@@ -132,10 +132,10 @@ export function AnalyticsTab() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="h-5 w-5" />
-            Chi tiết mô hình: {selectedModel}
+            Model details: {selectedModel}
           </CardTitle>
           <CardDescription>
-            Các chỉ số đánh giá hiệu suất chi tiết
+            Detailed performance evaluation indicators
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -185,7 +185,7 @@ export function AnalyticsTab() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5" />
-            Độ quan trọng của đặc trưng
+            Feature importance
           </CardTitle>
           <CardDescription>
             Feature Importance - Mức độ ảnh hưởng của từng biến đến kết quả dự đoán
@@ -223,14 +223,14 @@ export function AnalyticsTab() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Hành động huấn luyện
+            Training Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-3">
             <Button>
               <Brain className="h-4 w-4 mr-2" />
-              Huấn luyện lại mô hình
+              Retrain the model
             </Button>
             <Button variant="outline">
               <BarChart3 className="h-4 w-4 mr-2" />

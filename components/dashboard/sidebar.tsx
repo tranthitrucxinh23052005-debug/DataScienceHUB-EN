@@ -38,12 +38,12 @@ export function Sidebar({
   const hasHUBScore = fullData.length > 0 && 'TBM_He10' in fullData[0];
 
   const navItems = [
-    { id: 1, label: "Nguồn & Kiểm Toán", icon: Database, disabled: false },
-    { id: 2, label: "Tổng Quan Thống Kê", icon: BarChart3, disabled: !stepDataChecked || !hasHUBScore },
-    { id: 3, label: "Trí Tuệ Nhân Tạo", icon: Cpu, disabled: !stepDataChecked },
-    { id: 4, label: "Tương Quan Đa Biến", icon: Table2, disabled: !stepProcessed },
-    { id: 5, label: "BI Tùy Chỉnh", icon: LineChart, disabled: !stepProcessed },
-    { id: 6, label: "Máy Học & Dự Báo", icon: LayoutDashboard, disabled: !stepProcessed },
+    { id: 1, label: "Data Sources & Audit", icon: Database, disabled: false },
+    { id: 2, label: "Statistical Overview", icon: BarChart3, disabled: !stepDataChecked || !hasHUBScore },
+    { id: 3, label: "AI Insights & Analytics", icon: Cpu, disabled: !stepDataChecked },
+    { id: 4, label: "Multivariate Analysis", icon: Table2, disabled: !stepProcessed },
+    { id: 5, label: "Custom BI Dashboard", icon: LineChart, disabled: !stepProcessed },
+    { id: 6, label: "Predictive Analytics", icon: LayoutDashboard, disabled: !stepProcessed },
   ]
 
   return (

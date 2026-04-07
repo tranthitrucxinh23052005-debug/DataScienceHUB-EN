@@ -18,11 +18,11 @@ import {
 
 const sampleDataColumns = [
   { key: "stt", label: "STT", sortable: true },
-  { key: "name", label: "Tên biến", sortable: true },
-  { key: "type", label: "Kiểu dữ liệu", sortable: true },
-  { key: "count", label: "Số lượng", sortable: true },
-  { key: "missing", label: "Giá trị thiếu", sortable: true },
-  { key: "unique", label: "Giá trị duy nhất", sortable: true },
+  { key: "name", label: "Name", sortable: true },
+  { key: "type", label: "Type of Data", sortable: true },
+  { key: "count", label: "Count", sortable: true },
+  { key: "missing", label: "Missing Value", sortable: true },
+  { key: "unique", label: "Unique", sortable: true },
 ]
 
 const sampleDataInfo = [
@@ -39,11 +39,11 @@ const sampleDataInfo = [
 ]
 
 const rawDataColumns = [
-  { key: "student_id", label: "Mã SV", sortable: true },
-  { key: "gpa_score", label: "Điểm GPA", sortable: true },
-  { key: "study_hours", label: "Giờ học/tuần", sortable: true },
-  { key: "attendance_rate", label: "Tỷ lệ điểm danh", sortable: true },
-  { key: "extra_activities", label: "Hoạt động ngoại khóa", sortable: true },
+  { key: "student_id", label: "ID", sortable: true },
+  { key: "gpa_score", label: "GPA Score", sortable: true },
+  { key: "study_hours", label: "Study Hours", sortable: true },
+  { key: "attendance_rate", label: "Attendance Rate", sortable: true },
+  { key: "extra_activities", label: "Extra Activities", sortable: true },
 ]
 
 const rawData = [
@@ -67,21 +67,21 @@ export function ExplorationTab() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Upload className="h-5 w-5" />
-            Tải lên dữ liệu
+            Upload data
           </CardTitle>
           <CardDescription>
-            Tải lên tập dữ liệu mới để phân tích (CSV, Excel, JSON)
+            Upload new dataset for analysis (CSV, Excel, JSON)
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
             <FileSpreadsheet className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <p className="text-sm text-muted-foreground mb-4">
-              Kéo thả file vào đây hoặc click để chọn file
+             Drag and drop file here or click to select file
             </p>
             <Button variant="outline">
               <Upload className="h-4 w-4 mr-2" />
-              Chọn file
+              Select file
             </Button>
           </div>
         </CardContent>
@@ -92,25 +92,25 @@ export function ExplorationTab() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-foreground">12,847</div>
-            <p className="text-xs text-muted-foreground">Tổng số bản ghi</p>
+            <p className="text-xs text-muted-foreground">Total number of records</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-foreground">10</div>
-            <p className="text-xs text-muted-foreground">Số cột/biến</p>
+            <p className="text-xs text-muted-foreground">Number of columns/variables</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-foreground">336</div>
-            <p className="text-xs text-muted-foreground">Giá trị thiếu</p>
+            <p className="text-xs text-muted-foreground">Missing value</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-foreground">2.6%</div>
-            <p className="text-xs text-muted-foreground">Tỷ lệ thiếu</p>
+            <p className="text-xs text-muted-foreground">Missing rate</p>
           </CardContent>
         </Card>
       </div>
@@ -122,10 +122,10 @@ export function ExplorationTab() {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Table2 className="h-5 w-5" />
-                Khám phá dữ liệu
+                Explore data
               </CardTitle>
               <CardDescription>
-                Xem thông tin tổng quan và dữ liệu chi tiết
+                See overview information and detailed data
               </CardDescription>
             </div>
             <div className="flex items-center gap-2">
@@ -135,7 +135,7 @@ export function ExplorationTab() {
                 onClick={() => setViewMode("info")}
               >
                 <BarChart2 className="h-4 w-4 mr-2" />
-                Thông tin
+                Information
               </Button>
               <Button 
                 variant={viewMode === "data" ? "default" : "outline"} 
@@ -143,7 +143,7 @@ export function ExplorationTab() {
                 onClick={() => setViewMode("data")}
               >
                 <Eye className="h-4 w-4 mr-2" />
-                Dữ liệu
+                Data
               </Button>
             </div>
           </div>
@@ -174,29 +174,29 @@ export function ExplorationTab() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter className="h-5 w-5" />
-            Lọc và tìm kiếm nâng cao
+            Advanced filtering and searching
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">
-                Tìm theo mã sinh viên
+                Search by student ID
               </label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Nhập mã sinh viên..." className="pl-10" />
+                <Input placeholder="Enter student code..." className="pl-10" />
               </div>
             </div>
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">
-                Điểm GPA từ
+                GPA from
               </label>
               <Input type="number" placeholder="0.0" step="0.1" min="0" max="4" />
             </div>
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">
-                Điểm GPA đến
+                GPA to
               </label>
               <Input type="number" placeholder="4.0" step="0.1" min="0" max="4" />
             </div>
@@ -204,10 +204,10 @@ export function ExplorationTab() {
           <div className="mt-4 flex gap-2">
             <Button>
               <Search className="h-4 w-4 mr-2" />
-              Tìm kiếm
+              Search
             </Button>
             <Button variant="outline">
-              Đặt lại
+              Reset
             </Button>
           </div>
         </CardContent>

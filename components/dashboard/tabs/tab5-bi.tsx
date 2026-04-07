@@ -50,7 +50,7 @@ export function Tab5BI() {
                 <Sparkles className="h-5 w-5 text-blue-600" />
                 Custom BI Dashboard
               </CardTitle>
-              <p className="text-xs text-muted-foreground font-medium">Tùy chỉnh trục tọa độ và phép tính toán học</p>
+              <p className="text-xs text-muted-foreground font-medium">Customize coordinate axes and mathematical calculations.</p>
             </div>
             <Button 
               onClick={exportPDF} 
@@ -60,7 +60,7 @@ export function Tab5BI() {
               className="border-red-200 text-red-600 hover:bg-red-50 font-bold"
             >
               <FileDown className="h-4 w-4 mr-2" />
-              XUẤT BÁO CÁO PDF
+              EXPORT REPORT PDF
             </Button>
           </div>
         </CardHeader>
@@ -73,18 +73,18 @@ export function Tab5BI() {
               <Select value={chartType} onValueChange={setChartType}>
                 <SelectTrigger className="bg-white border-slate-200"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Bar">Cột (Bar Chart)</SelectItem>
-                  <SelectItem value="Line">Đường (Line Chart)</SelectItem>
-                  <SelectItem value="Pie">Tròn (Pie Chart)</SelectItem>
-                  <SelectItem value="Scatter">Phân tán (Scatter)</SelectItem>
+                  <SelectItem value="Bar">Bar Chart</SelectItem>
+                  <SelectItem value="Line">Line Chart</SelectItem>
+                  <SelectItem value="Pie">Pie Chart</SelectItem>
+                  <SelectItem value="Scatter">Scatter</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[10px] font-black text-blue-700 uppercase ml-1">Trục Hoành (X)</Label>
+              <Label className="text-[10px] font-black text-blue-700 uppercase ml-1">X-axis</Label>
               <Select value={xAxis} onValueChange={setXAxis}>
-                <SelectTrigger className="bg-white border-slate-200"><SelectValue placeholder="Chọn cột dữ liệu" /></SelectTrigger>
+                <SelectTrigger className="bg-white border-slate-200"><SelectValue placeholder="Select the data column" /></SelectTrigger>
                 <SelectContent>
                   {columnsInfo.map(c => (
                     <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
@@ -94,9 +94,9 @@ export function Tab5BI() {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[10px] font-black text-blue-700 uppercase ml-1">Trục Tung (Y)</Label>
+              <Label className="text-[10px] font-black text-blue-700 uppercase ml-1">Y-axis</Label>
               <Select value={yAxis} onValueChange={setYAxis}>
-                <SelectTrigger className="bg-white border-slate-200"><SelectValue placeholder="Chọn cột dữ liệu" /></SelectTrigger>
+                <SelectTrigger className="bg-white border-slate-200"><SelectValue placeholder="Select the data column" /></SelectTrigger>
                 <SelectContent>
                   {columnsInfo.map(c => (
                     <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
@@ -106,15 +106,15 @@ export function Tab5BI() {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[10px] font-black text-blue-700 uppercase ml-1">Phương Thức Tính</Label>
+              <Label className="text-[10px] font-black text-blue-700 uppercase ml-1">Calculation Method</Label>
               <div className="flex gap-2">
                 <Select value={aggFunc} onValueChange={setAggFunc}>
                   <SelectTrigger className="bg-white border-slate-200"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Giá trị gốc</SelectItem>
-                    <SelectItem value="mean">Trung bình</SelectItem>
-                    <SelectItem value="sum">Tổng cộng</SelectItem>
-                    <SelectItem value="count">Đếm số lượng</SelectItem>
+                    <SelectItem value="none">Original value</SelectItem>
+                    <SelectItem value="mean">Average</SelectItem>
+                    <SelectItem value="sum">Sum</SelectItem>
+                    <SelectItem value="count">Count</SelectItem>
                   </SelectContent>
                 </Select>
                 <Button 
@@ -122,7 +122,7 @@ export function Tab5BI() {
                   disabled={isLoading} 
                   className="bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-200 font-bold px-4 transition-all active:scale-95"
                 >
-                  VẼ MỚI
+                   DRAW NEW
                 </Button>
               </div>
             </div>
@@ -140,7 +140,7 @@ export function Tab5BI() {
       <div className="p-4 bg-white rounded-full shadow-sm">
         <BarChart className="h-8 w-8 text-slate-300" />
       </div>
-      <p className="font-bold text-sm">Cấu hình trục tọa độ và nhấn VẼ MỚI để bắt đầu</p>
+      <p className="font-bold text-sm">Configure the coordinate axes and press DRAW NEW to begin.</p>
     </div>
   ) : (
     <ResponsiveContainer width="100%" height="100%">
@@ -194,7 +194,7 @@ export function Tab5BI() {
           <XAxis dataKey={xAxis} type="number" name={xAxis} stroke="#64748b" fontSize={10} tickFormatter={formatXAxis} />
           <YAxis dataKey={yAxis} type="number" name={yAxis} stroke="#64748b" fontSize={10} />
           <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{borderRadius: '12px', border: 'none'}} />
-          <Scatter name="Sinh viên" data={biData} fill="#059669" fillOpacity={0.6} />
+          <Scatter name="Student" data={biData} fill="#059669" fillOpacity={0.6} />
           <Legend verticalAlign="top" align="right" wrapperStyle={{fontSize: '10px', fontWeight: 'bold'}} />
         </ScatterChart>
       )}

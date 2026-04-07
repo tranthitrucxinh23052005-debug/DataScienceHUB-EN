@@ -32,11 +32,11 @@ const forecastData = [
 ]
 
 const predictionColumns = [
-  { key: "period", label: "Kỳ", sortable: true },
-  { key: "prediction", label: "Giá trị dự đoán", sortable: true },
-  { key: "lower", label: "Khoảng dưới (95%)", sortable: true },
-  { key: "upper", label: "Khoảng trên (95%)", sortable: true },
-  { key: "confidence", label: "Độ tin cậy", sortable: true },
+  { key: "period", label: "Period", sortable: true },
+  { key: "prediction", label: "Prediction", sortable: true },
+  { key: "lower", label: "Lower(95%)", sortable: true },
+  { key: "upper", label: "Upper (95%)", sortable: true },
+  { key: "confidence", label: "Confidence", sortable: true },
 ]
 
 const predictionData = [
@@ -78,17 +78,17 @@ export function ForecastingTab() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calculator className="h-5 w-5" />
-            Dự đoán đơn lẻ
+            Single prediction
           </CardTitle>
           <CardDescription>
-            Nhập thông tin sinh viên để dự đoán điểm GPA
+Enter student information to predict GPA
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">
-                Số giờ học/tuần
+                Number of study hours/week
               </label>
               <Input 
                 type="number" 
@@ -99,7 +99,7 @@ export function ForecastingTab() {
             </div>
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">
-                Tỷ lệ điểm danh (%)
+                Attendance rate (%)
               </label>
               <Input 
                 type="number" 
@@ -112,7 +112,7 @@ export function ForecastingTab() {
             </div>
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">
-                Điểm kỳ trước (GPA)
+                Previous semester grades (GPA)
               </label>
               <Input 
                 type="number" 
@@ -126,7 +126,7 @@ export function ForecastingTab() {
             </div>
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">
-                Hoạt động ngoại khóa
+                Extracurricular activities
               </label>
               <Input 
                 type="number" 
@@ -141,12 +141,12 @@ export function ForecastingTab() {
           <div className="flex items-center gap-4">
             <Button onClick={handlePredict}>
               <PlayCircle className="h-4 w-4 mr-2" />
-              Chạy dự đoán
+              Run predictions
             </Button>
             {predictionResult !== null && (
               <div className="flex items-center gap-2 bg-accent/10 px-4 py-2 rounded-lg">
                 <ArrowRight className="h-4 w-4 text-accent" />
-                <span className="text-sm text-muted-foreground">Kết quả dự đoán:</span>
+                <span className="text-sm text-muted-foreground">Predicted results:</span>
                 <span className="text-lg font-bold text-accent">{predictionResult.toFixed(2)} GPA</span>
               </div>
             )}
@@ -167,34 +167,34 @@ export function ForecastingTab() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <TrendingUp className="h-5 w-5" />
-              Tóm tắt dự báo
+              Forecast summary
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Kỳ dự báo</span>
+                <span className="text-sm text-muted-foreground">Forecast period</span>
               </div>
-              <span className="text-sm font-semibold text-foreground">6 tháng</span>
+              <span className="text-sm font-semibold text-foreground">6 months</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
               <div className="flex items-center gap-2">
                 <Target className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Xu hướng</span>
+                <span className="text-sm text-muted-foreground">Trend</span>
               </div>
-              <span className="text-sm font-semibold text-accent">Tăng +42.8%</span>
+              <span className="text-sm font-semibold text-accent">Increase +42.8%</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
               <div className="flex items-center gap-2">
                 <LineChart className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Độ tin cậy TB</span>
+                <span className="text-sm text-muted-foreground">Avarage confidence </span>
               </div>
               <span className="text-sm font-semibold text-foreground">84.5%</span>
             </div>
             <Button className="w-full" variant="outline">
               <Calendar className="h-4 w-4 mr-2" />
-              Điều chỉnh khoảng dự báo
+              Adjust the forecast interval
             </Button>
           </CardContent>
         </Card>
@@ -214,23 +214,23 @@ export function ForecastingTab() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <PlayCircle className="h-5 w-5" />
-            Dự đoán hàng loạt
+            Mass prediction
           </CardTitle>
           <CardDescription>
-            Tải lên file CSV chứa thông tin nhiều sinh viên để dự đoán đồng thời
+            Upload a CSV file containing information for multiple students to predict simultaneously
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
             <Button variant="outline">
-              Chọn file CSV
+              Select CSV file
             </Button>
             <Button>
               <PlayCircle className="h-4 w-4 mr-2" />
-              Chạy dự đoán hàng loạt
+              Mass prediction
             </Button>
             <span className="text-sm text-muted-foreground">
-              Chưa có file nào được chọn
+              No files have been selected
             </span>
           </div>
         </CardContent>

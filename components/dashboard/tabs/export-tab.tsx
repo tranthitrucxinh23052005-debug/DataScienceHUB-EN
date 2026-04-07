@@ -118,10 +118,10 @@ export function ExportTab() {
           <div className="flex gap-3">
             <Button disabled={!selectedFormat}>
               <Download className="h-4 w-4 mr-2" />
-              Tải xuống
+              Download
             </Button>
             <Button variant="outline" disabled={!selectedFormat}>
-              Xem trước
+              Preview
             </Button>
           </div>
         </CardContent>
@@ -136,8 +136,8 @@ export function ExportTab() {
                 <FileText className="h-6 w-6 text-primary" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-foreground">Báo cáo nhanh</h3>
-                <p className="text-xs text-muted-foreground">PDF tóm tắt 1 trang</p>
+                <h3 className="font-semibold text-foreground">Quick report</h3>
+                <p className="text-xs text-muted-foreground">1-page summary PDF</p>
               </div>
               <Button size="sm" variant="outline">
                 <Download className="h-4 w-4" />
@@ -152,8 +152,8 @@ export function ExportTab() {
                 <FileSpreadsheet className="h-6 w-6 text-accent" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-foreground">Dữ liệu gốc</h3>
-                <p className="text-xs text-muted-foreground">Excel đầy đủ dữ liệu</p>
+                <h3 className="font-semibold text-foreground">Original data</h3>
+                <p className="text-xs text-muted-foreground">Excel full of data</p>
               </div>
               <Button size="sm" variant="outline">
                 <Download className="h-4 w-4" />
@@ -168,8 +168,8 @@ export function ExportTab() {
                 <Image className="h-6 w-6 text-chart-3" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-foreground">Tất cả biểu đồ</h3>
-                <p className="text-xs text-muted-foreground">ZIP chứa hình ảnh</p>
+                <h3 className="font-semibold text-foreground">All charts</h3>
+                <p className="text-xs text-muted-foreground">ZIP Images</p>
               </div>
               <Button size="sm" variant="outline">
                 <Download className="h-4 w-4" />
@@ -184,10 +184,10 @@ export function ExportTab() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
-            Lịch sử xuất file
+            File export history
           </CardTitle>
           <CardDescription>
-            Các file đã xuất gần đây
+            Recently exported files
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -214,7 +214,7 @@ export function ExportTab() {
                 <div className="flex items-center gap-2">
                   <span className="flex items-center gap-1 text-xs text-accent">
                     <CheckCircle2 className="h-3 w-3" />
-                    Hoàn thành
+                    Complete
                   </span>
                   <Button size="sm" variant="ghost">
                     <Download className="h-4 w-4" />

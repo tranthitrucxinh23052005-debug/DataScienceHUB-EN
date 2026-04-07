@@ -55,7 +55,7 @@ export function Tab6ML() {
     runARIMA
   } = useDataContext();
 
-  const numericCols = columnsInfo.filter((c: any) => c.type === 'SỐ');
+  const numericCols = columnsInfo.filter((c: any) => c.type === 'number');
 
   const handleKMeansColToggle = (colName: string) => {
     if (kmeansCols.includes(colName)) {
@@ -79,13 +79,13 @@ export function Tab6ML() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-lg font-bold text-purple-700 uppercase tracking-wide">
-            Phân Cụm Tự Động (K-Means)
+            Automatic Clustering (K-Means)
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex flex-col md:flex-row gap-4 bg-muted/50 p-4 rounded-lg border items-end">
             <div className="flex-1">
-              <Label className="text-xs font-bold text-foreground mb-2 block uppercase">Biến Không Gian (X)</Label>
+              <Label className="text-xs font-bold text-foreground mb-2 block uppercase">Space Variable (X)</Label>
               <div className="flex flex-wrap gap-2 max-h-[80px] overflow-y-auto">
                 {numericCols.map((c: any) => (
                   <label 
@@ -108,7 +108,7 @@ export function Tab6ML() {
             </div>
             <div className="flex items-center gap-2">
               <div>
-                <Label className="text-xs font-bold text-foreground mb-1 block uppercase">Số Cụm (K)</Label>
+                <Label className="text-xs font-bold text-foreground mb-1 block uppercase">Number of Clusters (K)</Label>
                 <Input 
                   type="number" 
                   min={2} 
@@ -132,7 +132,7 @@ export function Tab6ML() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="shadow-sm h-[350px]">
                 <CardContent className="pt-5 h-full flex flex-col">
-                  <h4 className="text-center text-sm font-bold text-foreground mb-2">Biểu Đồ Phân Cụm (PCA 2D)</h4>
+                  <h4 className="text-center text-sm font-bold text-foreground mb-2">Clustering Diagram (PCA 2D)</h4>
                   <div className="flex-1">
                     <ResponsiveContainer width="100%" height={280}>
                       <ScatterChart>
@@ -145,7 +145,7 @@ export function Tab6ML() {
                           <Scatter 
                             key={i} 
                             name={`Cụm ${i + 1}`} 
-                            data={kmeansData.scatter?.filter((d: any) => d.cluster === `Cụm ${i + 1}`)} 
+                            data={kmeansData.scatter?.filter((d: any) => d.cluster === `Cluster ${i + 1}`)} 
                             fill={COLORS[i % COLORS.length]} 
                           />
                         ))}
@@ -157,12 +157,12 @@ export function Tab6ML() {
               
               <Card className="shadow-sm h-[350px] flex flex-col">
                 <CardContent className="pt-0 flex-1 flex flex-col">
-                  <h4 className="text-center text-sm font-bold text-foreground py-3 bg-muted/50 -mx-6 px-6 border-b">Tọa Độ Trọng Tâm</h4>
+                  <h4 className="text-center text-sm font-bold text-foreground py-3 bg-muted/50 -mx-6 px-6 border-b">Center of Gravity Coordinates</h4>
                   <div className="overflow-auto flex-1 p-2 custom-scrollbar">
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="text-xs">Cụm</TableHead>
+                          <TableHead className="text-xs">Cluster</TableHead>
                           {kmeansData.features.map((f: string) => (
                             <TableHead key={f} className="text-xs truncate max-w-[60px]">{f}</TableHead>
                           ))}
@@ -171,7 +171,7 @@ export function Tab6ML() {
                       <TableBody>
                         {kmeansData.centers.map((c: any[], i: number) => (
                           <TableRow key={i}>
-                            <TableCell className="font-bold text-purple-700">Cụm {i+1}</TableCell>
+                            <TableCell className="font-bold text-purple-700">Cluster {i+1}</TableCell>
                             {c.map((v, j) => (
                               <TableCell key={j}>{isFinite(v) ? v.toFixed(2) : '0'}</TableCell>
                             ))}
@@ -193,7 +193,7 @@ export function Tab6ML() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg font-bold text-emerald-600 uppercase tracking-wide">
-              Huấn Luyện AI (ML)
+              AI (ML) Training
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -203,14 +203,14 @@ export function Tab6ML() {
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="rf">Random Forest</SelectItem>
-                  <SelectItem value="linear">Hồi Quy Tuyến Tính (OLS)</SelectItem>
+                  <SelectItem value="linear">Linear Regression (OLS)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label className="text-xs font-bold text-foreground mb-1 block">Mục Tiêu (Y)</Label>
+              <Label className="text-xs font-bold text-foreground mb-1 block">Target (Y)</Label>
               <Select value={targetCol} onValueChange={setTargetCol}>
-                <SelectTrigger><SelectValue placeholder="-- Chọn --" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder="-- Choose --" /></SelectTrigger>
                 <SelectContent>
                   {numericCols.map((c: any) => (
                     <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
@@ -219,7 +219,7 @@ export function Tab6ML() {
               </Select>
             </div>
             <div>
-              <Label className="text-xs font-bold text-foreground mb-1 block">Biến Độc Lập (X)</Label>
+              <Label className="text-xs font-bold text-foreground mb-1 block">Independent Variable (X)</Label>
               <div className="bg-muted/50 p-2 border rounded max-h-24 overflow-auto flex flex-wrap gap-1 custom-scrollbar">
                 {numericCols.filter((c: any) => c.name !== targetCol).map((c: any) => (
                   <label 
@@ -245,12 +245,12 @@ export function Tab6ML() {
               disabled={isLoading}
               className="w-full bg-emerald-600 hover:bg-emerald-700"
             >
-              HUẤN LUYỆN
+              TRAIN
             </Button>
             
             {modelMetrics && (
               <div className="mt-4 p-4 bg-emerald-50 rounded border border-emerald-100 text-center">
-                <div className="text-xs text-muted-foreground font-bold uppercase mb-1">Độ Tin Cậy (R-Squared)</div>
+                <div className="text-xs text-muted-foreground font-bold uppercase mb-1">R-Squared</div>
                 <div className="text-4xl font-bold text-emerald-600">{(modelMetrics.r2 * 100).toFixed(1)}%</div>
                 <div className="flex justify-center gap-4 mt-3 text-xs text-muted-foreground font-mono">
                   <span>MAE: {modelMetrics.mae}</span>
@@ -265,15 +265,15 @@ export function Tab6ML() {
         <Card className="flex flex-col">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg font-bold text-primary uppercase tracking-wide">
-              Dự Báo (ARIMA)
+              Forecast (ARIMA)
             </CardTitle>
           </CardHeader>
           <CardContent className="flex-1 flex flex-col space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs font-bold text-foreground mb-1 block">Cột Thời Gian</Label>
+                <Label className="text-xs font-bold text-foreground mb-1 block">Time Column</Label>
                 <Select value={arimaDateCol} onValueChange={setArimaDateCol}>
-                  <SelectTrigger><SelectValue placeholder="-- Chọn --" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="-- Choose --" /></SelectTrigger>
                   <SelectContent>
                     {columnsInfo.map((c: any) => (
                       <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
@@ -282,9 +282,9 @@ export function Tab6ML() {
                 </Select>
               </div>
               <div>
-                <Label className="text-xs font-bold text-foreground mb-1 block">Biến Quan Sát</Label>
+                <Label className="text-xs font-bold text-foreground mb-1 block">Observer Variable</Label>
                 <Select value={arimaTargetCol} onValueChange={setArimaTargetCol}>
-                  <SelectTrigger><SelectValue placeholder="-- Chọn --" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="-- Choose --" /></SelectTrigger>
                   <SelectContent>
                     {numericCols.map((c: any) => (
                       <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>
@@ -294,7 +294,7 @@ export function Tab6ML() {
               </div>
             </div>
             <div>
-              <Label className="text-xs font-bold text-foreground mb-1 block">Số Bước Dự Báo</Label>
+              <Label className="text-xs font-bold text-foreground mb-1 block">Step</Label>
               <Input 
                 type="number" 
                 min={1} 
@@ -309,7 +309,7 @@ export function Tab6ML() {
               disabled={isLoading}
               className="w-full"
             >
-              DỰ BÁO TƯƠNG LAI
+              FUTURE FORECAST
             </Button>
             
             <div className="flex-1 bg-muted/50 rounded border flex flex-col justify-center min-h-[250px] p-2">
@@ -325,7 +325,7 @@ export function Tab6ML() {
                   </LineChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="text-center text-xs text-muted-foreground">Kết quả vẽ biểu đồ sẽ hiển thị tại đây</div>
+                <div className="text-center text-xs text-muted-foreground">The results of the charting will be displayed here.</div>
               )}
             </div>
           </CardContent>
