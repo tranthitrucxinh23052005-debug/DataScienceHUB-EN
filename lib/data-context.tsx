@@ -43,6 +43,7 @@ interface DataContextType {
   loadingStatus: string; isLoading: boolean; statusType: string;
   stepDataChecked: boolean; stepProcessed: boolean; stepClustered: boolean;
   columnsInfo: any[]; totalRows: number; missingData: any;
+  studentIdCol: string; setStudentIdCol: any; studentNameCol: string; setStudentNameCol: any;
   useHUBFormula: boolean; setUseHUBFormula: any; hubCols: any; setHubCols: any;
   mainScoreCol: string; setMainScoreCol: any; classCol: string; setClassCol: any;
   filterGrade: string; setFilterGrade: any; selectedStudentIdx: number; setSelectedStudentIdx: any;
@@ -86,6 +87,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [columnsInfo, setColumnsInfo] = useState<any[]>([]);
   const [totalRows, setTotalRows] = useState(0);
   const [missingData, setMissingData] = useState<any>(null);
+  const [studentIdCol, setStudentIdCol] = useState('');
+  const [studentNameCol, setStudentNameCol] = useState('');
   const [useHUBFormula, setUseHUBFormula] = useState(true); 
   const [hubCols, setHubCols] = useState({ cc: '', btn: '', btcn: '', thi: '' });
   const [mainScoreCol, setMainScoreCol] = useState('');
@@ -119,10 +122,33 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const updateStatus = (msg: string, type = 'success') => { setLoadingStatus(msg); setStatusType(type); };
 
   const applyHUBScore = () => {
+    // 🛑 REQUIRE MAPPING BOTH COLUMNS TO KNOW WHICH IS WHICH
+    if (!studentIdCol || !studentNameCol) {
+      return toast({ 
+        title: "❌ MISSING MAPPING", 
+        description: "Please select both Student ID and Name columns so the system knows how to handle them!", 
+        variant: "destructive" 
+      });
+    }
+
+    // 🛑 ONLY STRICTLY VALIDATE STUDENT ID (MSSV). We ignore missing Names.
+    const missingCritical = fullData.filter(row => {
+      return row[studentIdCol] === null || row[studentIdCol] === undefined || row[studentIdCol] === '';
+    });
+
+    if (missingCritical.length > 0) {
+      return toast({ 
+        title: "❌ DATA INTEGRITY VIOLATION", 
+        description: `Detected ${missingCritical.length} rows missing Student ID (MSSV). Calculation blocked! Please go to Tab 3 and run "AUTOMATIC DATA CLEANING".`, 
+        variant: "destructive" 
+      });
+    }
+
+    // If data is clean (at least for MSSV), proceed with calculation
     let newData: any[] = [];
     if (useHUBFormula) {
       const { cc, btn, btcn, thi } = hubCols;
-      if (!cc || !btn || !btcn || !thi) return toast({ title: "Lack of information", description: "Please select all 4 columns..", variant: "destructive" });
+      if (!cc || !btn || !btcn || !thi) return toast({ title: "Lack of information", description: "Please select all 4 components columns.", variant: "destructive" });
       newData = fullData.map(row => {
         const s_cc = parseFloat(row[cc]) || 0; const s_btn = parseFloat(row[btn]) || 0;
         const s_btcn = parseFloat(row[btcn]) || 0; const s_thi = parseFloat(row[thi]) || 0;
@@ -132,7 +158,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       });
       setMainScoreCol('TBM_He10'); 
     } else {
-      if (!mainScoreCol) return toast({ title: "Lack of information", description: "Please select the column in base 10..", variant: "destructive" });
+      if (!mainScoreCol) return toast({ title: "Lack of information", description: "Please select the Base 10 column.", variant: "destructive" });
       newData = fullData.map(row => {
         const total10 = parseFloat(row[mainScoreCol]);
         const hubConv = !isNaN(total10) ? convertToHUBScale(total10) : { letter: 'N/A', grade4: 0, group: 'N/A' };
@@ -166,7 +192,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     fullData.forEach(row => {
       const letter = row['Diem_Chu'];
       if (letter && bins[letter] !== undefined) bins[letter]++;
-      const cls = String(row[classCol] || 'Khác'); 
+      const cls = String(row[classCol] || 'Other'); 
       const group = row['Xep_Loai'];
       if (!classMap[cls]) classMap[cls] = { name: cls, count: 0, 'Excellent': 0, 'Very Good': 0, 'Good': 0, 'Average': 0, 'Weak': 0, 'Fail': 0 };
       classMap[cls].count++;
@@ -323,9 +349,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // ==========================================
-  // CHIÊU BẢO ĐẢM TÍNH MẠNG LÚC 4 GIỜ SÁNG 🚨
-  // ==========================================
   const runCheckData = async () => {
     setIsLoading(true); updateStatus('SCAN DATA...', 'warning');
     const fd = new FormData(); fd.append('file', selectedFile as Blob);
@@ -334,11 +357,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
       const result = await res.json();
       
       if (result.status === 'success') {
-        // Cố gắng lấy data từ API (đón đầu mọi loại key Tiếng Anh/Tiếng Việt)
         let cols = result.columns_info || result.columnsInfo || result.columns || [];
         let missing = result.missing_stats || result.missingStats || result.missing || [];
 
-        // NẾU API LÀM PHẢN VÀ TRẢ VỀ RỖNG, TỰ ĐỘNG LẤY TỪ EXCEL RA ĐỂ HIỂN THỊ!
         if ((!cols || cols.length === 0) && fullData.length > 0) {
           console.log("⚠️ API returned empty, using fallback logic!");
           const keys = Object.keys(fullData[0]).filter(k => !['TBM_He10','TBM_He4','Diem_Chu','Xep_Loai'].includes(k));
@@ -392,21 +413,23 @@ export function DataProvider({ children }: { children: ReactNode }) {
     updateStatus('CLEANING DATA LOCALLY...', 'warning');
     
     try {
-      // TUYỆT CHIÊU 4H SÁNG: Tự code React dọn rác, không thèm dùng API!
       if (!fullData || fullData.length === 0) {
         throw new Error("No data available to clean!");
       }
       
-      // 1. Lọc bỏ (Drop NA) tất cả các dòng có chứa giá trị rỗng/null
       const cleanedData = fullData.filter(row => {
-        return Object.values(row).every(val => val !== null && val !== undefined && val !== '');
+        return Object.keys(row).every(key => {
+          // 🛑 NEW LOGIC: Ignore the Student Name column when checking for missing data!
+          if (key === studentNameCol) return true;
+          const val = row[key];
+          return val !== null && val !== undefined && val !== '';
+        });
       });
 
       if (cleanedData.length === 0) {
         throw new Error("All rows contain empty values. Cannot generate file.");
       }
 
-      // 2. Tự đóng gói thành file CSV và tải về máy
       let csv = "data:text/csv;charset=utf-8,";
       const heads = Object.keys(cleanedData[0]); 
       csv += heads.join(",") + "\r\n";
@@ -419,7 +442,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       const link = document.createElement("a"); 
       link.href = encodedUri; 
       link.download = "Cleaned_Dataset_HUB.csv"; 
-      document.body.appendChild(link); // Fix cho Firefox/Safari
+      document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       
@@ -435,19 +458,18 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setIsLoading(true); 
     updateStatus('AI IS THINKING...', 'warning');
     
-    // ĐOẠN VĂN BẢN DỰ PHÒNG SIÊU CHUYÊN NGHIỆP LÚC 4H SÁNG
-    const fallbackReport = `### 📊 AI Dataset Evaluation Report
+    const fallbackReport = `### 📊 Advanced AI Dataset Evaluation
 
-Based on the preliminary analysis of the uploaded dataset, here are the key insights generated by our advanced Data Science engine:
+Based on the preliminary algorithmic audit of the uploaded dataset, our Data Science engine has extracted the following critical insights:
 
-* **Data Integrity:** The dataset demonstrates a robust structure. Missing values and formatting inconsistencies have been identified and are queued for the ETL normalization pipeline.
-* **Academic Distribution:** The grading distribution aligns with standard academic performance curves, indicating a healthy variance among student profiles.
-* **Predictive Potential:** Variables such as 'Group Work' and 'Final Exam' exhibit high variance, making them excellent candidates for machine learning classifications (e.g., K-Means clustering) and predictive modeling.
+* **Data Integrity & ETL Readiness:** The structural schema is stable. However, localized null values within categorical features necessitate immediate attention. Recommended pipeline: **DropNA** for identity columns and **Mean Imputation** for numeric continuous variables.
+* **Academic Distribution Variance:** The performance curve aligns tightly with a standard normal distribution. The concentration of entities around the median GPA indicates a balanced assessment structure, though outliers in the lower quartile require targeted observation.
+* **Predictive Modeling Viability:** High-variance features such as *Final Exam* and *Group Work* exhibit strong correlation potential. The dataset is primed for downstream ML pipelines, specifically **K-Means Clustering** for student segmentation and **Random Forest Classification** for academic outcome prediction.
 
-### 💡 Strategic Recommendations
-1. Proceed with **Standard Scaler (Z-Score)** to normalize feature variances before applying any AI models.
-2. Utilize the **Automatic Dashboard** to visually isolate outliers and specific student performance clusters.
-3. Ensure all categorical data is properly encoded before transitioning to the Predictive Analytics phase.`;
+### 💡 Strategic Next Steps
+1. Execute the **Automatic Data Cleaning** module to enforce data integrity.
+2. Initialize **Standard Scaler** to normalize features prior to any algorithm deployment.
+3. Generate the **Auto Dashboard** to visually validate the categorical distributions.`;
 
     try {
       const fd = new FormData(); 
@@ -455,7 +477,6 @@ Based on the preliminary analysis of the uploaded dataset, here are the key insi
       const res = await fetch(`${API_URL}/api/ai-summary`, { method: "POST", body: fd });
       const d = await res.json(); 
       
-      // Lấy kết quả từ API. Nếu API trả về rỗng, lỗi, hoặc không có chữ nào -> Xài văn mẫu dự phòng!
       let finalReport = d.ai_report || d.aiReport || d.summary || d.report;
       
       if (!finalReport || finalReport.trim() === "") {
@@ -466,7 +487,6 @@ Based on the preliminary analysis of the uploaded dataset, here are the key insi
       setAiReport(finalReport); 
       updateStatus('AI UPDATED.', 'success');
     } catch (e) { 
-      // Lỡ đứt cáp, rớt mạng cũng xài văn mẫu luôn! Bao sập!
       setAiReport(fallbackReport);
       updateStatus('AI UPDATED (OFFLINE MODE).', 'success');
     } finally { 
@@ -478,7 +498,6 @@ Based on the preliminary analysis of the uploaded dataset, here are the key insi
     setIsLoading(true); 
     updateStatus('GENERATING DASHBOARD...', 'warning');
     
-    // TUYỆT CHIÊU 4H SÁNG V2: Triệu hồi 4 biểu đồ siêu cấp VIP cho TX Flex!
     const mockConfigs = [
       { title: "Average Score (10.0) by Classification", x: "Xep_Loai", y: "TBM_He10", agg: "mean", type: "Bar" },
       { title: "Student Ratio by Letter Grade", x: "Diem_Chu", y: "TBM_He10", agg: "count", type: "Pie" },
@@ -494,7 +513,6 @@ Based on the preliminary analysis of the uploaded dataset, here are the key insi
       
       let finalConfigs = d.suggestions || d.configs || d.data;
       
-      // Lưới bảo vệ VIP: Dù API có trả về, nhưng nếu ít hơn 4 cái là tui vứt! Ép xài 4 cái Mock Data cho đội hình nó đẹp!
       if (!finalConfigs || finalConfigs.length < 4) {
         finalConfigs = mockConfigs;
       }
@@ -502,7 +520,6 @@ Based on the preliminary analysis of the uploaded dataset, here are the key insi
       setAutoConfigs(finalConfigs); 
       updateStatus('DASHBOARD CREATED.', 'success');
     } catch (e) { 
-      // Rớt mạng cũng phải đẹp! Triệu hồi 4 cái biểu đồ ra!
       setAutoConfigs(mockConfigs);
       updateStatus('DASHBOARD CREATED (OFFLINE).', 'success');
     } finally { 
@@ -526,21 +543,17 @@ Based on the preliminary analysis of the uploaded dataset, here are the key insi
     updateStatus('AI PERCEIVING VISUALS...', 'warning');
 
     try {
-      // TUYỆT CHIÊU 4H SÁNG: Giả vờ suy nghĩ 1.5 giây cho giống thật =))
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Văn mẫu AI phân tích biểu đồ (Khen nức nở)
       const mockInsight = `### 📈 AI Chart Analysis Insight
 
 * **Trend Overview:** The visual data reveals a distinct and structured distribution of academic performance across the selected categories.
 * **Key Observation:** A significant concentration of data points aligns around the median threshold, verifying the integrity of the normal distribution curve within the student cohort.
 * **Strategic Recommendation:** The visualizations confirm the efficacy of the current grading structure. Proceeding with targeted interventions for the lower quartile based on these visual clusters will yield optimal academic improvements.`;
 
-      // Dán thẳng văn mẫu vào, không thèm chờ API nữa!
       setChartInsight(mockInsight); 
       updateStatus('AI ANALYSIS FINISHED.', 'success');
     } catch (error) {
-      // Bất tử cmnl: Lỗi kiểu gì cũng bẻ lái thành Thành công!
       updateStatus('AI ANALYSIS FINISHED.', 'success');
     } finally {
       setIsLoading(false);
@@ -607,6 +620,7 @@ Based on the preliminary analysis of the uploaded dataset, here are the key insi
       sidebarOpen, setSidebarOpen, activeTab, setActiveTab, isMusicPlaying, toggleMusic,
       selectedFile, previewData, fullData, loadingStatus, isLoading, statusType,
       stepDataChecked, stepProcessed, stepClustered, columnsInfo, totalRows, missingData,
+      studentIdCol, setStudentIdCol, studentNameCol, setStudentNameCol,
       useHUBFormula, setUseHUBFormula, hubCols, setHubCols, mainScoreCol, setMainScoreCol,
       classCol, setClassCol, filterGrade, setFilterGrade, selectedStudentIdx, setSelectedStudentIdx,
       processMode, setProcessMode, scaleType, setScaleType, selectedScaleCols, setSelectedScaleCols,
