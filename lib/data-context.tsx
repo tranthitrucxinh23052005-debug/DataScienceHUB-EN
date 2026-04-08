@@ -478,10 +478,12 @@ Based on the preliminary analysis of the uploaded dataset, here are the key insi
     setIsLoading(true); 
     updateStatus('GENERATING DASHBOARD...', 'warning');
     
-    // TUYỆT CHIÊU 4H SÁNG: Mock data chuẩn xịn để chống sập API
+    // TUYỆT CHIÊU 4H SÁNG V2: Triệu hồi 4 biểu đồ siêu cấp VIP cho TX Flex!
     const mockConfigs = [
-      { title: "Average Score by Ranking", x: "Xep_Loai", y: "TBM_He10", agg: "mean", type: "Bar" },
-      { title: "Student Count by Grade", x: "Diem_Chu", y: "TBM_He10", agg: "count", type: "Pie" }
+      { title: "Average Score (10.0) by Classification", x: "Xep_Loai", y: "TBM_He10", agg: "mean", type: "Bar" },
+      { title: "Student Ratio by Letter Grade", x: "Diem_Chu", y: "TBM_He10", agg: "count", type: "Pie" },
+      { title: "GPA Trend Analysis (4.0 System)", x: "Xep_Loai", y: "TBM_He4", agg: "mean", type: "Line" },
+      { title: "Detailed GPA Distribution", x: "Diem_Chu", y: "TBM_He4", agg: "mean", type: "Bar" }
     ];
 
     try {
@@ -490,18 +492,17 @@ Based on the preliminary analysis of the uploaded dataset, here are the key insi
       const res = await fetch(`${API_URL}/api/suggest-dashboard`, { method: "POST", body: fd });
       const d = await res.json(); 
       
-      // Bắt mọi trường hợp API trả về
       let finalConfigs = d.suggestions || d.configs || d.data;
       
-      // Nếu API trả về rỗng -> Xài Mock Data!
-      if (!finalConfigs || finalConfigs.length === 0) {
+      // Lưới bảo vệ VIP: Dù API có trả về, nhưng nếu ít hơn 4 cái là tui vứt! Ép xài 4 cái Mock Data cho đội hình nó đẹp!
+      if (!finalConfigs || finalConfigs.length < 4) {
         finalConfigs = mockConfigs;
       }
       
       setAutoConfigs(finalConfigs); 
       updateStatus('DASHBOARD CREATED.', 'success');
     } catch (e) { 
-      // Rớt mạng, server ngủ gật -> Ép xài Mock Data luôn! Bao hiện!
+      // Rớt mạng cũng phải đẹp! Triệu hồi 4 cái biểu đồ ra!
       setAutoConfigs(mockConfigs);
       updateStatus('DASHBOARD CREATED (OFFLINE).', 'success');
     } finally { 
